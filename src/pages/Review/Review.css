@@ -1,0 +1,629 @@
+/* ================================================================================
+   FILE: src/pages/Review/Review.css
+   ================================================================================ */
+.review-container {
+  max-width: 900px;
+}
+
+.review-main-header {
+  margin-bottom: 36px;
+}
+
+.review-main-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+}
+
+.review-main-header p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.review-workflow-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.credential-section {
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 32px;
+}
+
+.credential-section:last-of-type {
+  border-bottom: none;
+}
+
+.credential-section h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 6px 0;
+}
+
+.desc-subtext {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0 0 20px 0;
+}
+
+.id-segment-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 480px;
+  margin-bottom: 24px;
+}
+
+.id-segment-lbl {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 12px;
+}
+
+/* Dynamic Available / Taken styling for Unique ID container */
+.id-blocks-wrapper {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+  margin-bottom: 14px;
+  transition: all 0.25s ease;
+}
+
+/* Green available state */
+.id-blocks-wrapper.available {
+  border-color: #005d4e;
+  box-shadow: 0 0 0 2px rgba(0, 93, 78, 0.1);
+}
+
+.id-blocks-wrapper.available .prefix-block {
+  background: #005d4e;
+  color: #ffffff;
+}
+
+/* Red taken state */
+.id-blocks-wrapper.taken {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+}
+
+.id-blocks-wrapper.taken .prefix-block {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.prefix-block {
+  font-size: 16px;
+  font-weight: 700;
+  background: #e2e8f0;
+  color: #1e293b;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  transition: all 0.25s ease;
+}
+
+.digit-blocks {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  padding: 8px;
+}
+
+.digit-block-input {
+  flex: 1;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  text-transform: uppercase;
+  outline: none;
+  width: 100%;
+  height: 40px;
+  transition: all 0.2s ease;
+}
+
+/* Let the focused input block stand out */
+.digit-block-input:focus {
+  border-color: #005d4e;
+  background: #f0fdf4;
+}
+
+.id-blocks-wrapper.taken .digit-block-input {
+  border-color: #fecaca;
+  color: #ef4444;
+}
+
+/* Dynamic status notice text */
+.availability-msg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.availability-msg.available {
+  color: #005d4e;
+}
+
+.availability-msg.taken {
+  color: #ef4444;
+}
+
+.status-icon {
+  font-size: 16px;
+  stroke-width: 3px;
+}
+
+.suggestions-bar {
+  max-width: 800px;
+}
+
+.suggestions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.refresh-btn {
+  background: transparent;
+  border: none;
+  color: #005d4e;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.suggestion-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.suggestion-tag-btn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: #475569;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.suggestion-tag-btn:hover {
+  border-color: #005d4e;
+  color: #005d4e;
+}
+
+.suggestion-tag-btn.selected {
+  background: #005d4e;
+  border-color: #005d4e;
+  color: #ffffff;
+}
+
+/* Password form field structures */
+.password-fields-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.input-wrap.error {
+  border-color: #ef4444 !important;
+  background-color: #fff8f8;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 6px;
+  display: inline-block;
+}
+
+.eye-toggle {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.password-strength-meter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  margin-bottom: 24px;
+}
+
+.meter-bars {
+  width: 140px;
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.meter-bars .bar {
+  height: 100%;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.meter-bars .bar.orange {
+  background: #f59e0b;
+  width: 40%;
+}
+
+.meter-bars .bar.green {
+  background: #005d4e;
+  width: 100%;
+}
+
+.strength-label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.strength-label.weak {
+  color: #f59e0b;
+}
+
+.strength-label.strong {
+  color: #005d4e;
+}
+
+.criteria-checklist h5 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  margin: 0 0 12px 0;
+}
+
+.criteria-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Dynamic Checklist Items */
+.criteria-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.check-bullet {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+/* Checklist Neutral Starting State */
+.criteria-item.neutral {
+  color: #94a3b8;
+}
+
+.criteria-item.neutral .check-bullet {
+  background: #e2e8f0;
+  color: #ffffff;
+}
+
+/* Checklist Success Match State */
+.criteria-item.met {
+  color: #005d4e;
+  font-weight: 500;
+}
+
+.criteria-item.met .check-bullet {
+  background: #005d4e;
+  color: #ffffff;
+}
+
+/* Checklist Failed Misconfigured State */
+.criteria-item.unmet {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.criteria-item.unmet .check-bullet {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.footer-actions.stretch-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 56px;
+}
+
+.wide-btn {
+  min-width: 180px;
+}
+
+/* Success State Styles */
+.success-wrapper {
+  max-width: 600px;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.brand-header .teal-bg {
+  background: #005d4e;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-header .logo-text h3 {
+  margin: 0;
+  font-size: 15px;
+  color: #005d4e;
+  font-weight: 700;
+}
+
+.brand-header .logo-text span {
+  font-size: 10px;
+  color: #64748b;
+}
+
+.success-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 48px;
+  text-align: center;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.success-badge {
+  margin-bottom: 24px;
+}
+
+.success-card h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 12px 0;
+}
+
+.success-description {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0 0 32px 0;
+}
+
+.unique-id-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.section-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.id-block-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 12px;
+  background: #ffffff;
+}
+
+.id-prefix {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.id-boxes {
+  display: flex;
+  gap: 4px;
+}
+
+.id-boxes .char-box {
+  width: 24px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #005d4e;
+}
+
+.copy-action-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.copy-action-btn:hover {
+  color: #005d4e;
+}
+
+.email-notif-msg {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0 0 28px 0;
+}
+
+.email-notif-msg strong {
+  color: #1e293b;
+}
+
+.note-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: left;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.note-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.note-body {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.success-buttons {
+  display: flex;
+  width: 100%;
+  gap: 16px;
+}
+
+.secondary-action-btn {
+  flex: 1;
+  background: #f1f5f9;
+  color: #005d4e;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.secondary-action-btn:hover {
+  background: #e2e8f0;
+}
+
+.primary-teal-btn {
+  flex: 1;
+  background: #005d4e;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0,93,78,0.15);
+  transition: all 0.2s ease;
+}
+
+.primary-teal-btn:hover {
+  background: #00493d;
+}
+
+/* Review Mobile Constraints Layout */
+@media (max-width: 640px) {
+  .password-fields-row {
+    grid-template-columns: 1fr;
+  }
+  .success-card {
+    padding: 24px;
+  }
+  .success-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .id-segment-card {
+    padding: 16px;
+  }
+  .prefix-block {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  .digit-blocks {
+    padding: 4px;
+    gap: 2px;
+  }
+  .digit-block-input {
+    font-size: 14px;
+    height: 34px;
+  }
+  .suggestions-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .refresh-btn {
+    align-self: flex-end;
+  }
+  .footer-actions.stretch-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    margin-top: 36px;
+  }
+  .wide-btn {
+    width: 100%;
+  }
+}

@@ -1,0 +1,68 @@
+/* ================================================================================
+   FILE: src/index.css
+   ================================================================================ */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background: #fdfdfd;
+  color: #1e293b;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  text-align: left;
+  border: none;
+  min-height: 100vh;
+}
+
+/* Reset buttons and global interactions */
+button {
+  font-family: inherit;
+}
+
+/* Global Footer Actions Responsive Pattern */
+.footer-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 56px;
+  gap: 16px;
+}
+
+.right-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .footer-actions {
+    flex-direction: column-reverse;
+    gap: 16px;
+    align-items: stretch;
+    margin-top: 36px;
+  }
+
+  .right-group {
+    flex-direction: column-reverse;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .plain-back-btn,
+  .primary-dark-btn,
+  .secondary-skip-btn {
+    width: 100%;
+    text-align: center;
+    padding: 14px 20px;
+  }
+}

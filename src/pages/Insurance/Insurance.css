@@ -1,0 +1,526 @@
+/* ================================================================================
+   FILE: src/pages/Insurance/Insurance.css
+   ================================================================================ */
+.insurance-container {
+  max-width: 900px;
+}
+
+.insurance-form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ================================================================================
+   SEARCHABLE CUSTOM DROPDOWN SYSTEM
+   ================================================================================ */
+.custom-select-container {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-trigger-box {
+  height: 52px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  gap: 12px;
+}
+
+.dropdown-trigger-box:hover {
+  border-color: #94a3b8;
+}
+
+.dropdown-trigger-box.open {
+  border-color: #005d4e;
+  box-shadow: 0 0 0 2px rgba(0, 93, 78, 0.1);
+}
+
+.trigger-label {
+  flex: 1;
+  font-size: 14px;
+  color: #334155;
+}
+
+.trigger-label.placeholder {
+  color: #94a3b8;
+}
+
+.dropdown-chevron-icon {
+  color: #94a3b8;
+  font-size: 16px;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.dropdown-chevron-icon.rotated {
+  transform: rotate(180deg);
+}
+
+/* Flyout Panel */
+.dropdown-panel-flyout {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  overflow: hidden;
+  animation: slideDownIn 0.15s ease-out;
+}
+
+@keyframes slideDownIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Search Bar Inside Dropdown */
+.dropdown-search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.dropdown-search-icon {
+  color: #94a3b8;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.dropdown-search-wrapper input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #334155;
+  background: transparent;
+}
+
+.dropdown-search-wrapper input::placeholder {
+  color: #94a3b8;
+}
+
+/* Options List */
+.dropdown-list-container {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.dropdown-list-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-list-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdown-list-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.dropdown-item-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-left: 4px solid transparent;
+}
+
+.dropdown-item-option:hover {
+  background-color: #f8fafc;
+}
+
+.dropdown-item-option.selected {
+  background-color: #f0fbf8;
+  color: #005d4e;
+  font-weight: 600;
+  border-left-color: #005d4e;
+}
+
+.check-mark-icon {
+  color: #005d4e;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.dropdown-no-results-found {
+  padding: 16px;
+  font-size: 13px;
+  color: #94a3b8;
+  text-align: center;
+  list-style: none;
+}
+
+/* ================================================================================
+   INPUT WRAP - shared base style
+   ================================================================================ */
+.input-wrap {
+  height: 52px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.input-wrap:focus-within {
+  border-color: #005d4e;
+  box-shadow: 0 0 0 2px rgba(0, 93, 78, 0.1);
+}
+
+.input-wrap input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #334155;
+  background: transparent;
+}
+
+.input-wrap input::placeholder {
+  color: #94a3b8;
+}
+
+.input-icon {
+  color: #94a3b8;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* ================================================================================
+   STYLED DRAG-AND-DROP AREA
+   ================================================================================ */
+.drag-upload-box {
+  border: 2px dashed #cbd5e1;
+  background: #fdfdfd;
+  border-radius: 12px;
+  padding: 40px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.drag-upload-box:hover,
+.drag-upload-box.dragover {
+  border-color: #005d4e;
+  background: rgba(0, 93, 78, 0.02);
+}
+
+.cloud-icon {
+  font-size: 44px;
+  color: #94a3b8;
+}
+
+.upload-prompt p {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  color: #475569;
+}
+
+.browse-link {
+  color: #005d4e;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.upload-constraints {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* ================================================================================
+   INFO BANNER ALERT
+   ================================================================================ */
+.clarity-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 14px 18px;
+}
+
+.banner-alert-icon {
+  font-size: 18px;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.clarity-banner span {
+  font-size: 13px;
+  color: #475569;
+}
+
+/* ================================================================================
+   MULTI-FILE UPLOAD DYNAMIC CARD LIST STYLES
+   ================================================================================ */
+.insurance-preview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.preview-heading {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.insurance-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.insurance-preview-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.insurance-preview-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+  border-color: #cbd5e1;
+}
+
+.card-thumbnail-container {
+  height: 150px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #f1f5f9;
+  overflow: hidden;
+  position: relative;
+}
+
+.card-thumbnail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-thumbnail-pdf-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: #ef4444;
+}
+
+.pdf-type-icon {
+  font-size: 36px;
+}
+
+.fallback-ext {
+  font-size: 11px;
+  font-weight: 700;
+  background: #fee2e2;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: #ef4444;
+}
+
+.card-details-footer {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-meta-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.rename-label-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.card-lbl-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  flex: 1;
+}
+
+.inline-edit-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.inline-edit-btn:hover {
+  color: #005d4e;
+  background: #f1f5f9;
+}
+
+.rename-input-wrapper {
+  width: 100%;
+}
+
+.rename-inline-input {
+  width: 100%;
+  border: 1px solid #005d4e;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+  outline: none;
+}
+
+.card-lbl-size {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Progress indicator row */
+.card-upload-progress-row {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.upload-progress-track {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.progress-text-pct {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.spinning-loader {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.progress-bar-bg {
+  flex: 1;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: #005d4e;
+  border-radius: 4px;
+  transition: width 0.2s ease;
+}
+
+.cancel-btn-card {
+  font-size: 11px;
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.upload-success-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.upload-success-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.delete-card-btn {
+  background: transparent;
+  border: 1px solid #fee2e2;
+  color: #ef4444;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.delete-card-btn:hover {
+  background: #fef2f2;
+}
+
+@media (max-width: 640px) {
+  .insurance-preview-grid {
+    grid-template-columns: 1fr;
+  }
+}

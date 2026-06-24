@@ -1,0 +1,296 @@
+:root {
+  --primary-teal: #007f6e;
+  --primary-teal-light: #eef6f5;
+  --text-dark: #111827;
+  --text-gray: #6b7280;
+  --text-light-gray: #9ca3af;
+  --border-light: #e5e7eb;
+}
+
+.sidebar {
+  width: 300px;
+  background: #ffffff;
+  border-right: 1px solid var(--border-light);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  padding: 40px 24px;
+  box-sizing: border-box;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mobile backdrop drawer overlay */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 199;
+}
+
+/* Close button styled for drawer mode */
+.sidebar-close-btn {
+  display: none;
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: #f1f5f9;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-gray);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sidebar-close-btn:hover {
+  background: var(--border-light);
+  color: var(--text-dark);
+}
+
+/* Header & Logo styling */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 48px;
+  padding-left: 8px;
+}
+
+.sidebar-logo {
+  width: 38px;
+  height: 38px;
+  background: var(--primary-teal);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.logo-svg {
+  stroke-width: 2.5;
+}
+
+.sidebar-header-text h2 {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--primary-teal);
+  letter-spacing: -0.3px;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.sidebar-header-text span {
+  font-size: 9px;
+  color: var(--text-light-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+  display: block;
+}
+
+/* Sidebar Navigation Timeline Layout */
+.sidebar-nav {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding-left: 0px;
+}
+
+/* Line connects precisely from center of first step icon to center of last */
+.timeline-line {
+  position: absolute;
+  left: 30px; /* Aligns mathematically to center of the 36px wide icon wrappers */
+  top: 18px; /* Starts exactly at the vertical center of the first icon */
+  bottom: 18px; /* Ends exactly at the vertical center of the last icon */
+  width: 1.5px;
+  background: #e5e7eb;
+  z-index: 1;
+}
+
+.sidebar-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  z-index: 2;
+  text-align: left;
+  width: 100%;
+}
+
+/* Step Icons Wrapper styling */
+.sidebar-item-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-light-gray);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.step-icon {
+  font-size: 18px;
+  stroke-width: 2px;
+}
+
+.sidebar-item-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-gray);
+  transition: color 0.2s ease;
+}
+
+/* Step Hover States */
+.sidebar-item:not(.active):not(.locked):hover {
+  background: #f9fafb;
+}
+
+.sidebar-item:not(.active):not(.locked):hover .sidebar-item-label {
+  color: var(--text-dark);
+}
+
+/* Active Highlight */
+.sidebar-item.active {
+  background: var(--primary-teal-light);
+}
+
+.sidebar-item.active .sidebar-item-icon-container {
+  background: var(--primary-teal);
+  color: #ffffff;
+}
+
+.sidebar-item.active .sidebar-item-label {
+  font-weight: 600;
+  color: var(--primary-teal);
+}
+
+/* Completed Highlight Checkmark Style */
+.sidebar-item.completed .sidebar-item-icon-container {
+  background: transparent;
+  color: var(--primary-teal);
+}
+
+.sidebar-item.completed .sidebar-item-label {
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.checkmark-icon {
+  stroke-width: 3px;
+  font-size: 18px;
+  color: var(--primary-teal);
+}
+
+/* Locked steps styling */
+.sidebar-item.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Profile Progress Card */
+.sidebar-footer {
+  margin-top: auto;
+}
+
+.profile-progress-card {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.progress-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gray);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.progress-percentage {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary-teal);
+  margin: 0 0 12px 0;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--primary-teal);
+  border-radius: 10px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.estimated-time {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-gray);
+  font-weight: 500;
+}
+
+.time-icon {
+  font-size: 13px;
+  color: var(--text-light-gray);
+}
+
+/* Responsive Styles */
+@media (max-width: 1120px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    width: 290px;
+    z-index: 200;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.08);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    display: block;
+  }
+
+  .sidebar-close-btn {
+    display: flex;
+  }
+}

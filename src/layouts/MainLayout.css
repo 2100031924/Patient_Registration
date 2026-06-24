@@ -1,0 +1,194 @@
+/* ================================================================================
+   FILE: src/layouts/MainLayout.css
+   ================================================================================ */
+.main-layout {
+  min-height: 100vh;
+  background: #ffffff;
+  padding-left: 300px; /* Accounts for fixed sidebar width */
+  transition: padding-left 0.25s ease-in-out;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+/* Mobile top menu bar */
+.mobile-top-navbar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 150;
+}
+
+.mobile-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-menu-trigger {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #005d4e;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.mobile-menu-trigger:hover {
+  background: #f8fafc;
+}
+
+.mobile-app-brand {
+  font-size: 16px;
+  font-weight: 700;
+  color: #005d4e;
+}
+
+.mobile-nav-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  width: 90px;
+}
+
+.mobile-pct-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.mobile-mini-progress-track {
+  width: 100%;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mobile-mini-progress-fill {
+  height: 100%;
+  background: #005d4e;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Precise Horizontal Flex Container matching design exactly */
+.global-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 48px 24px 48px;
+  background: #ffffff;
+}
+
+.header-left-title {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 70%;
+}
+
+.page-main-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.page-main-subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.help-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.help-icon {
+  font-size: 32px;
+  color: #1e293b;
+  stroke-width: 1.5px;
+}
+
+.help-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.help-lbl {
+  display: block;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.help-link {
+  font-size: 13px;
+  color: #005d4e;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.page-content {
+  flex: 1;
+  padding: 12px 48px 64px 48px; /* Reduced top padding since header handles spacing */
+  overflow-y: auto;
+}
+
+/* Media Queries for responsive spacing */
+@media (max-width: 1120px) {
+  .main-layout {
+    padding-left: 0;
+  }
+
+  .mobile-top-navbar {
+    display: flex;
+  }
+
+  .global-header {
+    padding: 24px 24px 12px 24px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .page-content {
+    padding: 16px 24px 48px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .global-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .header-left-title {
+    max-width: 100%;
+  }
+
+  .help-box {
+    margin-top: 4px;
+  }
+}
