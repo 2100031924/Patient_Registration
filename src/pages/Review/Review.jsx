@@ -5,35 +5,111 @@ import { FiCheck, FiX, FiAlertTriangle, FiEye, FiEyeOff, FiCopy } from "react-ic
 import { LuRefreshCw } from "react-icons/lu";
 import "./Review.css";
 
-const generatedSuggestions = [
-  "PAT-7GH381",
-  "PAT-9A4B12",
-  "PAT-3F8K90",
-  "PAT-5M2P41",
-  "PAT-6Y7T23",
-  "PAT-1X8W92",
-  "PAT-4K9L10"
-];
+const CHARSET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const SUGGESTION_COUNT = 7;
+
+const generateSecureSegment = (length = 6) => {
+  const bytes = new Uint32Array(length);
+  crypto.getRandomValues(bytes);
+
+  let value = "";
+
+  for (let i = 0; i < length; i++) {
+    value += CHARSET[bytes[i] % CHARSET.length];
+  }
+
+  return value;  
+};
+
+const generateUniqueSuggestions = (
+  takenIds,
+  currentId = "",
+  count = SUGGESTION_COUNT
+) => {
+  const generated = new Set();
+
+  while (generated.size < count) {
+    const id = generateSecureSegment();
+
+    if (
+      takenIds.includes(id) ||
+      id === currentId ||
+      generated.has(id)
+    ) {
+      continue;
+    }
+
+    generated.add(id);
+  }
+
+  return [...generated].map(id => `PAT-${id}`);
+};
 
 export default function Review() {
   const navigate = useNavigate();
   const { formData, updateForm, markStepComplete, resetForm, isSubmitted, setIsSubmitted } = useForm();
-  const [suggestions, setSuggestions] = useState(generatedSuggestions);
+  const [suggestions, setSuggestions] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [idMode, setIdMode] = useState("auto"); // "auto" | "manual"
+
+  // Generate a single ID guaranteed not in takenIds (and not the current one)
+  const generateAvailableId = (taken, currentId = "") => {
+    let id = generateSecureSegment();
+    while (taken.includes(id) || id === currentId) {
+      id = generateSecureSegment();
+    }
+    return id;
+  };
 
   const [takenIds, setTakenIds] = useState(() => {
     const saved = localStorage.getItem("mediConnect_taken_ids");
     return saved ? JSON.parse(saved) : ["9A4B12", "3F8K90"];
   });
 
-  const isIdTaken = takenIds.includes(formData.patientId.toUpperCase());
+  useEffect(() => {
+    setSuggestions(
+      generateUniqueSuggestions(
+        takenIds,
+        formData.patientId.toUpperCase()
+      )
+    );
+  }, []);
+
+  const normalizedId = formData.patientId.toUpperCase();
+  const isIdTaken = takenIds.includes(normalizedId);
+  const isIdComplete = formData.patientId.trim().length === 6;
+  const isIdValid = isIdComplete && !isIdTaken;
 
   const handleRefreshSuggestions = () => {
-    const scrambled = [...generatedSuggestions]
-      .map(id => id === `PAT-${formData.patientId}` ? id : `PAT-${Math.random().toString(36).substring(2, 8).toUpperCase()}`)
-      .sort(() => 0.5 - Math.random());
-    setSuggestions(scrambled);
+    setSuggestions(
+      generateUniqueSuggestions(
+        takenIds,
+        formData.patientId.toUpperCase()
+      )
+    );
+  };
+
+  // Auto-assign a unique ID whenever auto mode is active and current ID is empty/taken
+  useEffect(() => {
+    if (idMode !== "auto") return;
+    const current = formData.patientId.toUpperCase();
+    if (current.length !== 6 || takenIds.includes(current)) {
+      updateForm({ patientId: generateAvailableId(takenIds, current) });
+    }
+  }, [idMode]);
+
+  const handleGenerateNew = () => {
+    updateForm({
+      patientId: generateAvailableId(takenIds, formData.patientId.toUpperCase()),
+    });
+  };
+
+  const handleSelectMode = (mode) => {
+    if (mode === "manual" && idMode === "auto") {
+      updateForm({ patientId: "" }); // clear generated ID so user starts fresh
+    }
+    setIdMode(mode);
   };
 
   const checks = {
@@ -45,11 +121,17 @@ export default function Review() {
 
   const isPasswordStrong = checks.length && checks.lowercase && checks.uppercase && checks.numberOrSymbol;
   const isMatch = formData.password === formData.confirmPassword && formData.password !== "";
-  const isValidToSubmit = isPasswordStrong && isMatch && !isIdTaken;
+  const isValidToSubmit = isPasswordStrong && isMatch && isIdValid;
 
   useEffect(() => {
     markStepComplete("/review", isValidToSubmit);
   }, [isValidToSubmit, markStepComplete]);
+
+  useEffect(() => {
+    setSuggestions(prev =>
+      prev.filter(item => item !== `PAT-${formData.patientId.toUpperCase()}`)
+    );
+  }, [formData.patientId]);
 
   const handleSuggestionSelect = (id) => {
     const segment = id.split("-")[1] || id;
@@ -62,9 +144,23 @@ export default function Review() {
   };
 
   const handleSubmit = () => {
-    const updatedTakenIds = [...takenIds, formData.patientId.toUpperCase()];
+    const id = formData.patientId.toUpperCase();
+
+    if (id.length !== 6 || takenIds.includes(id)) return;
+
+    const updatedTakenIds = [...takenIds, id];
+
     setTakenIds(updatedTakenIds);
-    localStorage.setItem("mediConnect_taken_ids", JSON.stringify(updatedTakenIds));
+
+    localStorage.setItem(
+      "mediConnect_taken_ids",
+      JSON.stringify(updatedTakenIds)
+    );
+
+    setSuggestions(
+      generateUniqueSuggestions(updatedTakenIds, id)
+    );
+
     setIsSubmitted(true);
   };
 
@@ -134,42 +230,123 @@ export default function Review() {
         <div className="credential-section">
           <h3>Create Your Unique Patient ID</h3>
           <p className="desc-subtext">This ID will be used to access your health records and services securely</p>
-          <div className="id-segment-card">
-            <label className="id-segment-lbl">MediConnect ID</label>
-            <div className={`id-blocks-wrapper ${isIdTaken ? "taken" : "available"}`}>
-              <span className="prefix-block">PAT</span>
-              <div className="digit-blocks">
-                {formData.patientId.padEnd(6, " ").split("").map((char, i) => (
-                  <input key={i} type="text" className="digit-block-input" value={char.trim()} onChange={handleIdChange} maxLength={6} placeholder="•" />
-                ))}
+
+          {/* Mode toggle: two separate features */}
+          <div className="id-mode-toggle" role="tablist">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={idMode === "auto"}
+              className={`id-mode-btn ${idMode === "auto" ? "active" : ""}`}
+              onClick={() => handleSelectMode("auto")}
+            >
+              Auto-Generate ID
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={idMode === "manual"}
+              className={`id-mode-btn ${idMode === "manual" ? "active" : ""}`}
+              onClick={() => handleSelectMode("manual")}
+            >
+              Create My Own ID
+            </button>
+          </div>
+
+          {/* ── AUTO MODE ── */}
+          {idMode === "auto" && (
+            <div className="id-segment-card">
+              <label className="id-segment-lbl">Your Auto-Generated MediConnect ID</label>
+              <div className="id-blocks-wrapper available">
+                <span className="prefix-block">PAT</span>
+                <div className="digit-blocks-display auto-display">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <span key={i} className="digit-block-display-char filled">
+                      {formData.patientId[i] || "•"}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
-            {/* Availability Notification */}
-            {isIdTaken ? (
-              <div className="availability-msg taken">
-                <FiAlertTriangle className="status-icon" />
-                <span>This ID is already taken</span>
-              </div>
-            ) : (
               <div className="availability-msg available">
                 <FiCheck className="status-icon" />
-                <span>PAT-{formData.patientId} is available</span>
+                <span>PAT-{normalizedId} is available</span>
               </div>
-            )}
-          </div>
-          <div className="suggestions-bar">
-            <div className="suggestions-header">
-              <span>Suggestions</span>
-              <button type="button" className="refresh-btn" onClick={handleRefreshSuggestions}><LuRefreshCw /><span>Refresh</span></button>
+              <button type="button" className="refresh-btn auto-regen-btn" onClick={handleGenerateNew}>
+                <LuRefreshCw /><span>Generate New</span>
+              </button>
             </div>
-            <div className="suggestion-tags">
-              {suggestions.map((item) => (
-                <button key={item} type="button" className={`suggestion-tag-btn ${`PAT-${formData.patientId}` === item ? "selected" : ""}`} onClick={() => handleSuggestionSelect(item)} >
-                  {item}
-                </button>
-              ))}
-            </div>
-          </div>
+          )}
+
+          {/* ── MANUAL MODE ── */}
+          {idMode === "manual" && (
+            <>
+              <div className="id-segment-card">
+                <label className="id-segment-lbl">MediConnect ID</label>
+                <div className={`id-blocks-wrapper ${isIdComplete ? (isIdTaken ? "taken" : "available") : "neutral"}`}>
+                  <span className="prefix-block">PAT</span>
+                  <div className="digit-blocks custom-id-entry">
+                    <input
+                      type="text"
+                      className="custom-id-input"
+                      value={formData.patientId}
+                      onChange={handleIdChange}
+                      maxLength={6}
+                      placeholder="Create your own ID"
+                      autoComplete="off"
+                      spellCheck={false}
+                      aria-label="Create your patient ID"
+                    />
+                    <div className="digit-blocks-display" aria-hidden="true">
+                      {Array.from({ length: 6 }).map((_, i) => (
+                        <span key={i} className={`digit-block-display-char ${formData.patientId[i] ? "filled" : ""}`}>
+                          {formData.patientId[i] || "•"}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {!isIdComplete ? (
+                  <div className="availability-msg neutral">
+                    <FiAlertTriangle className="status-icon" />
+                    <span>Enter a 6-character ID ({formData.patientId.length}/6)</span>
+                  </div>
+                ) : isIdTaken ? (
+                  <div className="availability-msg taken">
+                    <FiAlertTriangle className="status-icon" />
+                    <span>This ID is already taken</span>
+                  </div>
+                ) : (
+                  <div className="availability-msg available">
+                    <FiCheck className="status-icon" />
+                    <span>PAT-{normalizedId} is available</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Suggestions are a manual-mode helper only */}
+              <div className="suggestions-bar">
+                <div className="suggestions-header">
+                  <span>Suggestions</span>
+                  <button type="button" className="refresh-btn" onClick={handleRefreshSuggestions}>
+                    <LuRefreshCw /><span>Refresh</span>
+                  </button>
+                </div>
+                <div className="suggestion-tags">
+                  {suggestions.map((item) => (
+                    <button
+                      key={item}
+                      type="button"
+                      className={`suggestion-tag-btn ${`PAT-${formData.patientId}` === item ? "selected" : ""}`}
+                      onClick={() => handleSuggestionSelect(item)}
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Create Password */}

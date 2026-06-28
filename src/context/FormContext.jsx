@@ -16,6 +16,11 @@ export const steps = [
   { id: "review",         label: "Review & Complete",       path: "/review",           percentage: 90,  time: "2-3 Minutes" },
 ];
 
+const STORAGE_KEY = "patient_onboarding_form_v1";
+
+/* Keys holding File objects — cannot be JSON-serialized, kept in memory only */
+const NON_SERIALIZABLE_KEYS = ["insuranceFiles", "healthRecords"];
+
 const initialState = {
   /* ── Personal Info ── */
   fullName: "",
@@ -41,7 +46,7 @@ const initialState = {
   emergencyRelationship: "",
   emergencyContact: "",
 
-  /* ── Medical History  ── */
+  /* ── Medical History ── */
   allergies: "",
   allergiesTags: [],
   medications: "",
@@ -58,28 +63,82 @@ const initialState = {
   healthRecords: [],
 
   /* ── Review & Login Credentials ── */
-  patientId: "7GH381",
+  patientId: "",
   password: "",
   confirmPassword: "",
 };
 
+const initialCompletedSteps = {
+  "/": false,
+  "/additional-info": false,
+  "/medical-history": false,
+  "/insurance": false,
+  "/health-records": false,
+  "/review": false,
+};
+
+/* Remove File-bearing keys before persisting */
+function toSerializable(formData) {
+  const clone = { ...formData };
+  NON_SERIALIZABLE_KEYS.forEach((k) => {
+    clone[k] = []; // do not persist File objects
+  });
+  return clone;
+}
+
+/* Read + merge persisted state once, synchronously, on first render */
+function loadPersisted() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return {
+        formData: initialState,
+        completedSteps: initialCompletedSteps,
+        isSubmitted: false,
+      };
+    }
+    const parsed = JSON.parse(raw);
+    return {
+      // merge so newly added fields keep their defaults
+      formData: { ...initialState, ...(parsed.formData || {}) },
+      completedSteps: { ...initialCompletedSteps, ...(parsed.completedSteps || {}) },
+      isSubmitted: Boolean(parsed.isSubmitted),
+    };
+  } catch {
+    return {
+      formData: initialState,
+      completedSteps: initialCompletedSteps,
+      isSubmitted: false,
+    };
+  }
+}
+
 export function FormProvider({ children }) {
   const location = useLocation();
 
-  const [formData, setFormData] = useState(initialState);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [completedSteps, setCompletedSteps] = useState({
-    "/": false,
-    "/additional-info": false,
-    "/medical-history": false,
-    "/insurance": false,
-    "/health-records": false,
-    "/review": false,
-  });
+  /* Lazy initializers rehydrate from localStorage on mount */
+  const [formData, setFormData] = useState(() => loadPersisted().formData);
+  const [isSubmitted, setIsSubmitted] = useState(() => loadPersisted().isSubmitted);
+  const [completedSteps, setCompletedSteps] = useState(() => loadPersisted().completedSteps);
+
   const [currentStep, setCurrentStep] = useState(() => {
     const idx = steps.findIndex((s) => s.path === location.pathname);
     return idx >= 0 ? idx : 0;
   });
+
+  /* Persist whenever serializable state changes */
+  useEffect(() => {
+    try {
+      const payload = {
+        formData: toSerializable(formData),
+        completedSteps,
+        isSubmitted,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    } catch {
+      /* storage full or unavailable — ignore, keep working in memory */
+    }
+  }, [formData, completedSteps, isSubmitted]);
 
   /* Keep currentStep in sync with URL changes */
   useEffect(() => {
@@ -96,16 +155,12 @@ export function FormProvider({ children }) {
   }, []);
 
   const resetForm = useCallback(() => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch { /* ignore */ }
     setFormData(initialState);
     setIsSubmitted(false);
-    setCompletedSteps({
-      "/": false,
-      "/additional-info": false,
-      "/medical-history": false,
-      "/insurance": false,
-      "/health-records": false,
-      "/review": false,
-    });
+    setCompletedSteps(initialCompletedSteps);
   }, []);
 
   const goToStep = useCallback((index) => {

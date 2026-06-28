@@ -627,3 +627,115 @@
     width: 100%;
   }
 }
+
+/* ================================================================================
+   CUSTOM PATIENT ID INPUT STYLES
+   ================================================================================ */
+.custom-id-entry {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 8px;
+}
+
+.custom-id-input {
+  width: 100%;
+  letter-spacing: 0.9em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.custom-id-input:focus {
+  border-color: #005d4e;
+  box-shadow: 0 0 0 2px rgba(0, 93, 78, 0.1);
+}
+
+.id-blocks-wrapper.available .custom-id-input {
+  border-color: #16a34a;
+}
+
+.id-blocks-wrapper.taken .custom-id-input {
+  border-color: #dc2626;
+}
+
+.id-blocks-wrapper.neutral {
+  border-color: #cbd5e1;
+}
+
+.digit-blocks-display {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.digit-block-display-char {
+  width: 34px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-weight: 700;
+  color: #94a3b8;
+  font-size: 15px;
+  background: #ffffff;
+}
+
+.digit-block-display-char.filled {
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+.availability-msg.neutral {
+  color: #64748b;
+}
+
+/* ================================================================================
+   ID MODE TOGGLE (Auto-Generate vs Create My Own)
+   ================================================================================ */
+.id-mode-toggle {
+  display: inline-flex;
+  gap: 4px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 20px;
+}
+
+.id-mode-btn {
+  border: none;
+  background: transparent;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.id-mode-btn.active {
+  background: #005d4e;
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 93, 78, 0.2);
+}
+
+.auto-display {
+  padding: 8px 0;
+}
+
+.auto-regen-btn {
+  margin-top: 14px;
+  padding: 8px 14px;
+  border: 1px solid #005d4e;
+  border-radius: 7px;
+}
