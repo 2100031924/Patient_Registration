@@ -27,7 +27,6 @@ const MainLayout = () => {
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       </div>
       <div className="main-content">
-        {/* Sticky Mobile/Tablet Navigation Bar */}
         {!isSubmitted && (
           <nav className="mobile-top-navbar">
             <div className="mobile-nav-left">
@@ -50,7 +49,6 @@ const MainLayout = () => {
           </nav>
         )}
 
-        {/* Global Support and Page Alignment Header */}
         {!isSubmitted && (
           <header className="global-header">
             <div className="header-left-title">

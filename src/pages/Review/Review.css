@@ -658,6 +658,11 @@
   box-shadow: 0 0 0 2px rgba(0, 93, 78, 0.1);
 }
 
+.custom-id-entry .custom-id-input {
+  color: #0f172a;
+  caret-color: #005d4e;
+}
+
 .id-blocks-wrapper.available .custom-id-input {
   border-color: #16a34a;
 }
@@ -730,7 +735,9 @@
 }
 
 .auto-display {
-  padding: 8px 0;
+  margin-top: 0;
+  padding: 8px 12px;
+  align-items: center;
 }
 
 .auto-regen-btn {

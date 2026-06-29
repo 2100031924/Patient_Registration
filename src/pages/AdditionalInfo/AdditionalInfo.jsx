@@ -1,104 +1,9 @@
-// ================================================================================
-// FILE: src/pages/AdditionalInfo/AdditionalInfo.jsx
-// ================================================================================
 import { useNavigate } from "react-router-dom";
 import { useForm } from "../../context/FormContext";
-import { useEffect, useState, useRef } from "react";
-import { FiPhone, FiChevronDown, FiSearch } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import { FiPhone, FiChevronDown } from "react-icons/fi";
+import CustomDropdown from "../../components/CustomDropdown/CustomDropdown";
 import "./AdditionalInfo.css";
-
-// Reusable Custom Searchable Dropdown matching Image 2 perfectly
-function CustomDropdown({
-  label,
-  name,
-  options,
-  value,
-  onChange,
-  onBlur,
-  error,
-  placeholder = "Select"
-}) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const dropdownRef = useRef(null);
-
-  // Close drop list on outside clicks
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-        if (onBlur) {
-          onBlur({ target: { name } });
-        }
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [onBlur, name]);
-
-  const handleSelect = (option) => {
-    // Mimic synthetic event schema so the existing handleChange works without changing form architecture
-    onChange({ target: { name, value: option } });
-    setIsOpen(false);
-    setSearchQuery("");
-  };
-
-  const filteredOptions = options.filter((option) =>
-    option.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  return (
-    <div className="custom-dropdown-container" ref={dropdownRef}>
-      <div
-        className={`custom-dropdown-trigger ${isOpen ? "open" : ""} ${error ? "error" : ""}`}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span className={`selected-text ${!value ? "placeholder" : ""}`}>
-          {value || placeholder}
-        </span>
-        <FiChevronDown className={`chevron-icon ${isOpen ? "rotated" : ""}`} />
-      </div>
-
-      {isOpen && (
-        <div className="custom-dropdown-menu">
-          {/* Custom Search bar inside list container */}
-          <div className="dropdown-search-wrap">
-            <div className="dropdown-search-inner">
-              <FiSearch className="search-icon" />
-              <input
-                type="text"
-                placeholder={`Search "${label}"`}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onClick={(e) => e.stopPropagation()} // Stop menu from auto-closing on input field click
-              />
-            </div>
-          </div>
-
-          {/* Rendered Options List */}
-          <div className="dropdown-options-list">
-            {filteredOptions.length > 0 ? (
-              filteredOptions.map((option) => {
-                const isSelected = value === option;
-                return (
-                  <div
-                    key={option}
-                    className={`dropdown-option ${isSelected ? "selected" : ""}`}
-                    onClick={() => handleSelect(option)}
-                  >
-                    {option}
-                  </div>
-                );
-              })
-            ) : (
-              <div className="dropdown-no-results">No results found</div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 export default function AdditionalInfo() {
   const navigate = useNavigate();
@@ -128,7 +33,6 @@ export default function AdditionalInfo() {
 
   const errors = {};
 
-  // 1. Dynamic Height Validation based on selected unit
   const heightUnit = formData.heightUnit || "cm";
   if (formData.height) {
     const h = parseFloat(formData.height);
@@ -145,7 +49,6 @@ export default function AdditionalInfo() {
     }
   }
 
-  // 2. Dynamic Weight Validation based on selected unit
   const weightUnit = formData.weightUnit || "kg";
   if (formData.weight) {
     const w = parseFloat(formData.weight);
@@ -162,7 +65,6 @@ export default function AdditionalInfo() {
     }
   }
 
-  // 3. Blood Pressure Format & Realistic Range Validation
   if (formData.bloodPressure) {
     const bpRegex = /^\d{2,3}\/\d{2,3}$/;
     if (!bpRegex.test(formData.bloodPressure.trim())) {
@@ -175,7 +77,6 @@ export default function AdditionalInfo() {
     }
   }
 
-  // 4. Blood Sugar Validation (Negative & Extremely high realistic verification checks)
   if (formData.bloodSugar) {
     const bs = parseFloat(formData.bloodSugar);
     if (isNaN(bs)) {
@@ -187,7 +88,6 @@ export default function AdditionalInfo() {
     }
   }
 
-  // 5. Dropdown Selection Requirements
   if (!formData.physicalActivity) {
     errors.physicalActivity = "Please select your activity level.";
   }
@@ -204,7 +104,6 @@ export default function AdditionalInfo() {
     errors.emergencyRelationship = "Please select your relationship with the emergency contact.";
   }
 
-  // 6. Emergency Contact Complex Validation
   if (!formData.emergencyContact || formData.emergencyContact.trim() === "") {
     errors.emergencyContact = "Emergency contact number is required.";
   } else {
@@ -224,7 +123,6 @@ export default function AdditionalInfo() {
     markStepComplete("/additional-info", isValid);
   }, [isValid, markStepComplete]);
 
-  // Options configuration matching your initial list values
   const physicalActivityOptions = [
     "Sedentary",
     "Lightly Active",
@@ -275,7 +173,6 @@ export default function AdditionalInfo() {
   return (
     <div className="additional-container">
       <div className="additional-grid">
-        {/* Height Field */}
         <div className="field">
           <label>Height</label>
           <div className={`unit-field ${touched.height && errors.height ? "error" : ""}`}>
@@ -308,7 +205,6 @@ export default function AdditionalInfo() {
           )}
         </div>
 
-        {/* Weight Field */}
         <div className="field">
           <label>Weight</label>
           <div className={`unit-field ${touched.weight && errors.weight ? "error" : ""}`}>
@@ -341,7 +237,6 @@ export default function AdditionalInfo() {
           )}
         </div>
 
-        {/* Blood Pressure */}
         <div className="field">
           <label>Blood Pressure (if Known)</label>
           <div className={`unit-field ${touched.bloodPressure && errors.bloodPressure ? "error" : ""}`}>
@@ -360,7 +255,6 @@ export default function AdditionalInfo() {
           )}
         </div>
 
-        {/* Blood Sugar */}
         <div className="field">
           <label>Blood Sugar (if Known)</label>
           <div className={`unit-field ${touched.bloodSugar && errors.bloodSugar ? "error" : ""}`}>
@@ -379,7 +273,6 @@ export default function AdditionalInfo() {
           )}
         </div>
 
-        {/* Physical Activity Level */}
         <div className="field">
           <label>Physical Activity Level</label>
           <CustomDropdown
@@ -396,7 +289,6 @@ export default function AdditionalInfo() {
           )}
         </div>
 
-        {/* Dietary Preference */}
         <div className="field">
           <label>Dietary Preference</label>
           <CustomDropdown
@@ -413,7 +305,6 @@ export default function AdditionalInfo() {
           )}
         </div>
 
-        {/* Smoking Status */}
         <div className="field">
           <label>Smoking Status</label>
           <CustomDropdown
@@ -430,7 +321,6 @@ export default function AdditionalInfo() {
           )}
         </div>
 
-        {/* Alcohol Consumption */}
         <div className="field">
           <label>Alcohol Consumption</label>
           <CustomDropdown
@@ -447,7 +337,6 @@ export default function AdditionalInfo() {
           )}
         </div>
 
-        {/* Emergency Contact Relationship */}
         <div className="field">
           <label>Emergency Contact Relationship <span className="required">*</span></label>
           <CustomDropdown
@@ -464,7 +353,6 @@ export default function AdditionalInfo() {
           )}
         </div>
 
-        {/* Emergency Contact Number */}
         <div className="field">
           <label>Emergency Contact Number <span className="required">*</span></label>
           <div className={`input-wrap ${touched.emergencyContact && errors.emergencyContact ? "error" : ""}`}>

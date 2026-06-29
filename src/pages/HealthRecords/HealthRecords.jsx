@@ -54,7 +54,6 @@ export default function HealthRecords() {
 
       updatedRecords.push(newRecord);
 
-      // Simulate live upload progress
       let currentProgress = 0;
       const interval = setInterval(() => {
         currentProgress += Math.floor(Math.random() * 20) + 12;
@@ -115,7 +114,6 @@ export default function HealthRecords() {
       <div className="records-upload-panel">
         <label className="records-label">Upload your health records</label>
 
-        {/* Large Drag and Drop Zone */}
         <div
           className={`records-drag-box ${dragOver ? "dragover" : ""}`}
           onDragOver={(e) => {
@@ -143,14 +141,12 @@ export default function HealthRecords() {
           </div>
         </div>
 
-        {/* Render Record Cards with dynamic loading previews */}
         {formData.healthRecords && formData.healthRecords.length > 0 && (
           <div className="records-file-list-section">
             <h4 className="records-total-title">Uploaded Files ({formData.healthRecords.length})</h4>
             <div className="records-cards-view-grid">
               {formData.healthRecords.map((rec) => (
                 <div key={rec.id} className="record-preview-card">
-                  {/* Aspect-Ratio Preview Container */}
                   <div className="record-card-media-box">
                     {rec.preview ? (
                       <img src={rec.preview} alt={rec.name} className="record-preview-img" />
@@ -162,7 +158,6 @@ export default function HealthRecords() {
                     )}
                   </div>
 
-                  {/* Card Actions & Meta Area */}
                   <div className="record-card-meta-details">
                     <div className="record-title-line">
                       {editingId === rec.id ? (
@@ -190,7 +185,6 @@ export default function HealthRecords() {
                     </div>
                     <span className="record-file-subtitle-specs">{rec.type} &bull; {rec.size}</span>
 
-                    {/* Progress Bar Track or Complete Message */}
                     <div className="record-action-progress-footer-row">
                       {rec.status === "uploading" ? (
                         <div className="record-track-row">
@@ -233,7 +227,6 @@ export default function HealthRecords() {
           </div>
         )}
 
-        {/* Supported documents indicators */}
         <div className="supported-section">
           <h5>Supported Documents</h5>
           <div className="supported-chips">
@@ -257,7 +250,6 @@ export default function HealthRecords() {
         </div>
       </div>
 
-      {/* Navigation action layout */}
       <div className="footer-actions">
         <button className="secondary-skip-btn" onClick={() => navigate("/review")}>
           Skip for now

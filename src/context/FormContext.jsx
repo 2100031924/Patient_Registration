@@ -1,12 +1,8 @@
-// ================================================================================
-// FILE: src/context/FormContext.jsx
-// ================================================================================
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const FormContext = createContext(null);
 
-/* ── Step Configuration ── */
 export const steps = [
   { id: "personal",       label: "Personal Details",        path: "/",                 percentage: 10,  time: "1-2 Minutes" },
   { id: "additional",     label: "Additional Information",  path: "/additional-info",  percentage: 30,  time: "2-3 Minutes" },
@@ -18,11 +14,9 @@ export const steps = [
 
 const STORAGE_KEY = "patient_onboarding_form_v1";
 
-/* Keys holding File objects — cannot be JSON-serialized, kept in memory only */
 const NON_SERIALIZABLE_KEYS = ["insuranceFiles", "healthRecords"];
 
 const initialState = {
-  /* ── Personal Info ── */
   fullName: "",
   dob: "",
   gender: "",
@@ -32,7 +26,6 @@ const initialState = {
   email: "",
   phone: "",
 
-  /* ── Additional Info ── */
   height: "",
   heightUnit: "cm",
   weight: "",
@@ -46,7 +39,6 @@ const initialState = {
   emergencyRelationship: "",
   emergencyContact: "",
 
-  /* ── Medical History ── */
   allergies: "",
   allergiesTags: [],
   medications: "",
@@ -54,15 +46,12 @@ const initialState = {
   conditionsTags: [],
   surgeries: "",
 
-  /* ── Insurance ── */
   provider: "",
   policyNumber: "",
   insuranceFiles: [],
 
-  /* ── Health Records ── */
   healthRecords: [],
 
-  /* ── Review & Login Credentials ── */
   patientId: "",
   password: "",
   confirmPassword: "",
@@ -77,16 +66,14 @@ const initialCompletedSteps = {
   "/review": false,
 };
 
-/* Remove File-bearing keys before persisting */
 function toSerializable(formData) {
   const clone = { ...formData };
   NON_SERIALIZABLE_KEYS.forEach((k) => {
-    clone[k] = []; // do not persist File objects
+    clone[k] = [];
   });
   return clone;
 }
 
-/* Read + merge persisted state once, synchronously, on first render */
 function loadPersisted() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -99,7 +86,6 @@ function loadPersisted() {
     }
     const parsed = JSON.parse(raw);
     return {
-      // merge so newly added fields keep their defaults
       formData: { ...initialState, ...(parsed.formData || {}) },
       completedSteps: { ...initialCompletedSteps, ...(parsed.completedSteps || {}) },
       isSubmitted: Boolean(parsed.isSubmitted),
@@ -116,7 +102,6 @@ function loadPersisted() {
 export function FormProvider({ children }) {
   const location = useLocation();
 
-  /* Lazy initializers rehydrate from localStorage on mount */
   const [formData, setFormData] = useState(() => loadPersisted().formData);
   const [isSubmitted, setIsSubmitted] = useState(() => loadPersisted().isSubmitted);
   const [completedSteps, setCompletedSteps] = useState(() => loadPersisted().completedSteps);
@@ -126,7 +111,6 @@ export function FormProvider({ children }) {
     return idx >= 0 ? idx : 0;
   });
 
-  /* Persist whenever serializable state changes */
   useEffect(() => {
     try {
       const payload = {
@@ -136,11 +120,10 @@ export function FormProvider({ children }) {
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     } catch {
-      /* storage full or unavailable — ignore, keep working in memory */
+      void 0;
     }
   }, [formData, completedSteps, isSubmitted]);
 
-  /* Keep currentStep in sync with URL changes */
   useEffect(() => {
     const idx = steps.findIndex((s) => s.path === location.pathname);
     if (idx >= 0) setCurrentStep(idx);
@@ -157,7 +140,7 @@ export function FormProvider({ children }) {
   const resetForm = useCallback(() => {
     try {
       localStorage.removeItem(STORAGE_KEY);
-    } catch { /* ignore */ }
+    } catch { void 0; }
     setFormData(initialState);
     setIsSubmitted(false);
     setCompletedSteps(initialCompletedSteps);

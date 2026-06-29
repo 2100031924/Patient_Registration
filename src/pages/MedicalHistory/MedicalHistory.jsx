@@ -1,6 +1,3 @@
-// ================================================================================
-// FILE: src/pages/MedicalHistory/MedicalHistory.jsx
-// ================================================================================
 import { useNavigate } from "react-router-dom";
 import { useForm } from "../../context/FormContext";
 import { useEffect, useState } from "react";
@@ -21,7 +18,6 @@ export default function MedicalHistory() {
     }
   };
 
-  // Allergy Tags logic
   const handleAddAllergyTag = (e) => {
     if (e.key === "Enter" && newAllergyInput.trim()) {
       e.preventDefault();
@@ -44,7 +40,6 @@ export default function MedicalHistory() {
     });
   };
 
-  // Conditions Tags logic
   const handleAddConditionTag = (e) => {
     if (e.key === "Enter" && newConditionInput.trim()) {
       e.preventDefault();
@@ -77,8 +72,6 @@ export default function MedicalHistory() {
   return (
     <div className="medical-history-container">
       <div className="history-form-grid">
-
-        {/* Allergies */}
         <div className="field full-width">
           <label>Allergies</label>
           <div className="textarea-wrapper">
@@ -89,7 +82,6 @@ export default function MedicalHistory() {
               onChange={handleChange}
             />
 
-            {/* Visual Tags list below description */}
             <div className="tags-container">
               {(formData.allergiesTags || []).map((tag, idx) => (
                 <span key={idx} className="medical-tag">
@@ -104,7 +96,6 @@ export default function MedicalHistory() {
                 </span>
               ))}
 
-              {/* Inline input to append new tag */}
               <input
                 type="text"
                 className="add-tag-inline-input"
@@ -117,7 +108,6 @@ export default function MedicalHistory() {
           </div>
         </div>
 
-        {/* Current Medications */}
         <div className="field full-width">
           <label>Current Medications</label>
           <div className="textarea-wrapper">
@@ -133,7 +123,6 @@ export default function MedicalHistory() {
           </div>
         </div>
 
-        {/* Existing Conditions */}
         <div className="field full-width">
           <label>Existing Conditions</label>
           <div className="textarea-wrapper">
@@ -144,7 +133,6 @@ export default function MedicalHistory() {
               onChange={handleChange}
             />
 
-            {/* Visual Tags list below description */}
             <div className="tags-container">
               {(formData.conditionsTags || []).map((tag, idx) => (
                 <span key={idx} className="medical-tag">
@@ -159,7 +147,6 @@ export default function MedicalHistory() {
                 </span>
               ))}
 
-              {/* Inline input to append new tag */}
               <input
                 type="text"
                 className="add-tag-inline-input"
@@ -172,7 +159,6 @@ export default function MedicalHistory() {
           </div>
         </div>
 
-        {/* Previous Surgeries */}
         <div className="field full-width">
           <label>Previous Surgeries</label>
           <div className="textarea-wrapper">
@@ -189,7 +175,6 @@ export default function MedicalHistory() {
         </div>
       </div>
 
-      {/* Footer controls */}
       <div className="footer-actions">
         <button className="secondary-skip-btn" onClick={() => navigate("/insurance")}>
           Skip for now

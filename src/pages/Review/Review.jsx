@@ -51,9 +51,8 @@ export default function Review() {
   const [suggestions, setSuggestions] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [idMode, setIdMode] = useState("auto"); // "auto" | "manual"
+  const [idMode, setIdMode] = useState("auto");
 
-  // Generate a single ID guaranteed not in takenIds (and not the current one)
   const generateAvailableId = (taken, currentId = "") => {
     let id = generateSecureSegment();
     while (taken.includes(id) || id === currentId) {
@@ -90,7 +89,6 @@ export default function Review() {
     );
   };
 
-  // Auto-assign a unique ID whenever auto mode is active and current ID is empty/taken
   useEffect(() => {
     if (idMode !== "auto") return;
     const current = formData.patientId.toUpperCase();
@@ -107,7 +105,7 @@ export default function Review() {
 
   const handleSelectMode = (mode) => {
     if (mode === "manual" && idMode === "auto") {
-      updateForm({ patientId: "" }); // clear generated ID so user starts fresh
+      updateForm({ patientId: "" });
     }
     setIdMode(mode);
   };
@@ -226,12 +224,10 @@ export default function Review() {
   return (
     <div className="review-container">
       <div className="review-workflow-stack">
-        {/* Unique Patient ID */}
         <div className="credential-section">
           <h3>Create Your Unique Patient ID</h3>
           <p className="desc-subtext">This ID will be used to access your health records and services securely</p>
 
-          {/* Mode toggle: two separate features */}
           <div className="id-mode-toggle" role="tablist">
             <button
               type="button"
@@ -253,7 +249,6 @@ export default function Review() {
             </button>
           </div>
 
-          {/* ── AUTO MODE ── */}
           {idMode === "auto" && (
             <div className="id-segment-card">
               <label className="id-segment-lbl">Your Auto-Generated MediConnect ID</label>
@@ -277,7 +272,6 @@ export default function Review() {
             </div>
           )}
 
-          {/* ── MANUAL MODE ── */}
           {idMode === "manual" && (
             <>
               <div className="id-segment-card">
@@ -291,18 +285,11 @@ export default function Review() {
                       value={formData.patientId}
                       onChange={handleIdChange}
                       maxLength={6}
-                      placeholder="Create your own ID"
+                      placeholder=""
                       autoComplete="off"
                       spellCheck={false}
                       aria-label="Create your patient ID"
                     />
-                    <div className="digit-blocks-display" aria-hidden="true">
-                      {Array.from({ length: 6 }).map((_, i) => (
-                        <span key={i} className={`digit-block-display-char ${formData.patientId[i] ? "filled" : ""}`}>
-                          {formData.patientId[i] || "•"}
-                        </span>
-                      ))}
-                    </div>
                   </div>
                 </div>
 
@@ -324,7 +311,6 @@ export default function Review() {
                 )}
               </div>
 
-              {/* Suggestions are a manual-mode helper only */}
               <div className="suggestions-bar">
                 <div className="suggestions-header">
                   <span>Suggestions</span>
@@ -349,7 +335,6 @@ export default function Review() {
           )}
         </div>
 
-        {/* Create Password */}
         <div className="credential-section">
           <h3>Create a strong password</h3>
           <p className="desc-subtext">Create a strong password with a mix of letters, numbers and symbols</p>
@@ -390,7 +375,6 @@ export default function Review() {
               {formData.password.length === 0 ? "" : (isPasswordStrong ? "Very Good" : "Weak")}
             </span>
           </div>
-          {/* Verification Checklist */}
           <div className="criteria-checklist">
             <h5>Should Contain:</h5>
             <div className="criteria-list">

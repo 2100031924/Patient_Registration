@@ -37,7 +37,6 @@ export default function Insurance() {
   const dropdownRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  // Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -93,7 +92,6 @@ export default function Insurance() {
 
       updatedFiles.push(newRecord);
 
-      // Simulate step-by-step progress tracking
       let currentProgress = 0;
       const interval = setInterval(() => {
         currentProgress += Math.floor(Math.random() * 25) + 10;
@@ -152,7 +150,6 @@ export default function Insurance() {
   return (
     <div className="insurance-container">
       <div className="insurance-form-stack">
-        {/* Insurance Provider - Searchable Dropdown */}
         <div className="field">
           <label>Insurance Provider</label>
           <div className="custom-select-container" ref={dropdownRef}>
@@ -208,7 +205,6 @@ export default function Insurance() {
           </div>
         </div>
 
-        {/* Customer ID / Policy Number */}
         <div className="field">
           <label>Customer ID / Policy Number</label>
           <div className="input-wrap">
@@ -223,7 +219,6 @@ export default function Insurance() {
           </div>
         </div>
 
-        {/* Upload Insurance Card Zone */}
         <div className="field">
           <label>Upload Insurance Card (Optional)</label>
           <div
@@ -254,14 +249,12 @@ export default function Insurance() {
           </div>
         </div>
 
-        {/* Dynamic Multi-File Cards Preview Section */}
         {formData.insuranceFiles && formData.insuranceFiles.length > 0 && (
           <div className="insurance-preview-section">
             <h4 className="preview-heading">Uploaded Cards ({formData.insuranceFiles.length})</h4>
             <div className="insurance-preview-grid">
               {formData.insuranceFiles.map((file) => (
                 <div className="insurance-preview-card" key={file.id}>
-                  {/* Card Image Thumbnail */}
                   <div className="card-thumbnail-container">
                     {file.preview ? (
                       <img src={file.preview} alt={file.name} className="card-thumbnail-image" />
@@ -273,7 +266,6 @@ export default function Insurance() {
                     )}
                   </div>
 
-                  {/* Card Details & Actions */}
                   <div className="card-details-footer">
                     <div className="card-meta-title-row">
                       {editingId === file.id ? (
@@ -303,7 +295,6 @@ export default function Insurance() {
                     </div>
                     <span className="card-lbl-size">{file.type} &bull; {file.size}</span>
 
-                    {/* Progress Bar & Delete Control */}
                     <div className="card-upload-progress-row">
                       {file.status === "uploading" ? (
                         <div className="upload-progress-track">
@@ -341,14 +332,12 @@ export default function Insurance() {
           </div>
         )}
 
-        {/* Clarity Banner */}
         <div className="clarity-banner">
           <FiAlertCircle className="banner-alert-icon" />
           <span>Make sure the card is clear and all details are visible</span>
         </div>
       </div>
 
-      {/* Navigation actions */}
       <div className="footer-actions">
         <button className="secondary-skip-btn" onClick={() => navigate("/health-records")}>
           Skip for now

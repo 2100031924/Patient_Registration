@@ -1,9 +1,6 @@
-// ================================================================================
-// FILE: src/pages/PersonalInfo/PersonalInfo.jsx
-// ================================================================================
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "../../context/FormContext";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
   FiUser,
   FiPhone,
@@ -11,10 +8,9 @@ import {
   FiCalendar,
   FiMapPin,
   FiHeart,
-  FiUserCheck,
-  FiChevronDown,
-  FiSearch
+  FiUserCheck
 } from "react-icons/fi";
+import CustomSelect from "../../components/CustomSelect/CustomSelect";
 import "./PersonalInfo.css";
 
 const states = [
@@ -25,109 +21,6 @@ const states = [
 const genders = ["Male", "Female", "Non-binary", "Prefer not to say"];
 const bloodGroups = ["O+", "A+", "B+", "AB+", "O-", "A-", "B-", "AB-", "Don't Know"];
 const cities = ["Hyderabad", "Bangalore", "Chennai", "Mumbai", "Delhi", "Pune"];
-
-// Reusable Searchable Custom Dropdown Component
-function CustomSelect({
-  label,
-  name,
-  value,
-  options,
-  placeholder,
-  icon: Icon,
-  error,
-  errorMessage,
-  onChange,
-  onBlur
-}) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const dropdownRef = useRef(null);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        if (isOpen) {
-          setIsOpen(false);
-          onBlur({ target: { name } });
-        }
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen, name, onBlur]);
-
-  const filteredOptions = options.filter((option) =>
-    option.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleSelect = (optionValue) => {
-    onChange({ target: { name, value: optionValue } });
-    setIsOpen(false);
-    setSearchTerm("");
-  };
-
-  const toggleDropdown = () => {
-    if (isOpen) {
-      onBlur({ target: { name } });
-    }
-    setIsOpen(!isOpen);
-  };
-
-  return (
-    <div className="field" ref={dropdownRef}>
-      <label>
-        {label} <span className="required">*</span>
-      </label>
-      <div className="custom-dropdown-container">
-        <div
-          className={`select-wrap ${error ? "error" : ""} ${isOpen ? "active" : ""}`}
-          onClick={toggleDropdown}
-        >
-          {Icon && <Icon className="input-icon" />}
-          <span className={`select-value ${!value ? "placeholder" : ""}`}>
-            {value || placeholder}
-          </span>
-          <FiChevronDown className={`select-chevron ${isOpen ? "rotated" : ""}`} />
-        </div>
-
-        {isOpen && (
-          <div className="dropdown-menu">
-            <div className="search-wrap">
-              <FiSearch className="search-icon" />
-              <input
-                type="text"
-                placeholder={`Search ${label}`}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                autoFocus
-              />
-            </div>
-            <div className="options-list">
-              {filteredOptions.length > 0 ? (
-                filteredOptions.map((opt) => {
-                  const isSelected = value === opt;
-                  return (
-                    <div
-                      key={opt}
-                      className={`dropdown-option ${isSelected ? "selected" : ""}`}
-                      onClick={() => handleSelect(opt)}
-                    >
-                      {opt}
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="no-options">No options found</div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-      {error && <span className="error-message">{errorMessage}</span>}
-    </div>
-  );
-}
 
 export default function PersonalInfo() {
   const navigate = useNavigate();
@@ -168,9 +61,8 @@ export default function PersonalInfo() {
     formData.city !== "" &&
     validateEmail(formData.email);
 
-  // Populate phone from URL query param, or set a demo number so the field isn't blank
   useEffect(() => {
-    if (formData.phone) return; // already set
+    if (formData.phone) return;
     const phoneFromUrl = searchParams.get("phone");
     updateForm({ phone: phoneFromUrl || "9876543210" });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -182,7 +74,6 @@ export default function PersonalInfo() {
   return (
     <div className="personal-container">
       <div className="personal-grid">
-        {/* Full Name */}
         <div className="field">
           <label>Full Name <span className="required">*</span></label>
           <div className={`input-wrap ${touched.fullName && !formData.fullName.trim() ? "error" : ""}`}>
@@ -201,7 +92,6 @@ export default function PersonalInfo() {
           )}
         </div>
 
-        {/* Date of Birth */}
         <div className="field">
           <label>Date of Birth <span className="required">*</span></label>
           <div className={`input-wrap ${touched.dob && !formData.dob ? "error" : ""}`}>
@@ -219,7 +109,6 @@ export default function PersonalInfo() {
           )}
         </div>
 
-        {/* Phone Number (Disabled) */}
         <div className="field">
           <label>Phone Number</label>
           <div className="input-wrap disabled">
@@ -233,7 +122,6 @@ export default function PersonalInfo() {
           </div>
         </div>
 
-        {/* Email Address */}
         <div className="field">
           <label>Email Address</label>
           <div className={`input-wrap ${touched.email && formData.email && !validateEmail(formData.email) ? "error" : ""}`}>
@@ -252,7 +140,6 @@ export default function PersonalInfo() {
           )}
         </div>
 
-        {/* Gender */}
         <CustomSelect
           label="Gender"
           name="gender"
@@ -266,7 +153,6 @@ export default function PersonalInfo() {
           onBlur={handleBlur}
         />
 
-        {/* Blood Group */}
         <CustomSelect
           label="Blood Group"
           name="bloodGroup"
@@ -280,7 +166,6 @@ export default function PersonalInfo() {
           onBlur={handleBlur}
         />
 
-        {/* State */}
         <CustomSelect
           label="State"
           name="state"
@@ -294,7 +179,6 @@ export default function PersonalInfo() {
           onBlur={handleBlur}
         />
 
-        {/* Current City */}
         <CustomSelect
           label="Current City"
           name="city"
@@ -309,13 +193,11 @@ export default function PersonalInfo() {
         />
       </div>
 
-      {/* Warning Box */}
       <div className="validation-note">
         <span className="star-char">*</span>
         <span className="note-text">These fields are required!</span>
       </div>
 
-      {/* Primary Action Button */}
       <div className="personal-actions">
         <button
           className="submit-step-btn"
