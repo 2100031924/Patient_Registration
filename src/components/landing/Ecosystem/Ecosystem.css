@@ -1,9 +1,8 @@
-/* Premium design tokens & layout alignments */
 :root {
-  --eco-primary: #008f75; /* Exact clinical brand green matched from your image */
+  --eco-primary: #008f75;
   --eco-primary-hover: #007660;
-  --eco-text-main: #111827; /* Deep Charcoal Black */
-  --eco-text-sub: #6b7280; /* Perfect Slate Gray for description text */
+  --eco-text-main: #111827;
+  --eco-text-sub: #6b7280;
   --eco-border-light: #f1f5f9;
 }
 
@@ -21,11 +20,19 @@
   padding: 0 24px;
 }
 
-/* Header Text Styles */
+/* Header Scroll Reveal States */
 .eco-header {
   text-align: center;
   max-width: 800px;
   margin: 0 auto 64px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.eco-header.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .section-label {
@@ -55,7 +62,7 @@
   max-width: 600px;
 }
 
-/* Horizontal Flow Layout with Connectors */
+/* Horizontal Flow Layout */
 .eco-flow-container {
   display: flex;
   align-items: flex-start;
@@ -64,9 +71,23 @@
   width: 100%;
 }
 
+/* Node Reveal Initialization */
+.eco-node-wrapper,
+.eco-flow-connector {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.eco-flow-container.is-visible .eco-node-wrapper,
+.eco-flow-container.is-visible .eco-flow-connector {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .eco-node-wrapper {
   flex-shrink: 0;
-  width: 12%; /* Perfect spacing ratio matching image */
+  width: 12%;
   display: flex;
   justify-content: center;
 }
@@ -78,7 +99,7 @@
   text-align: center;
 }
 
-/* Outer Ring & Hover Glow Structure */
+/* Outer Ring & 3D Tilt Target */
 .eco-node-circle-outer {
   position: relative;
   width: 82px;
@@ -90,9 +111,10 @@
   background: #ffffff;
   border: 1px solid #f1f5f9;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.15s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
   margin-bottom: 20px;
   z-index: 2;
+  will-change: transform;
 }
 
 .eco-node-icon {
@@ -104,6 +126,7 @@
   justify-content: center;
   color: var(--eco-primary);
   transition: all 0.3s ease;
+  z-index: 2;
 }
 
 .eco-node-icon svg {
@@ -111,14 +134,25 @@
   height: 30px;
 }
 
-/* Smooth Interactive Micro-Animations */
-.eco-node:hover .eco-node-circle-outer {
-  transform: translateY(-4px);
-  border-color: var(--eco-primary);
-  box-shadow: 0 10px 20px rgba(0, 143, 117, 0.06);
+.eco-node-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 143, 117, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
 }
 
-/* Typography for Node Labels */
+.eco-node:hover .eco-node-circle-outer {
+  border-color: var(--eco-primary);
+}
+
+.eco-node:hover .eco-node-glow {
+  opacity: 1;
+}
+
 .eco-node-text h4 {
   font-size: 14px;
   font-weight: 700;
@@ -132,7 +166,7 @@
   color: var(--eco-text-sub);
   line-height: 1.4;
   margin: 0;
-  max-width: 140px; /* Forces beautiful word-wrap exactly like image */
+  max-width: 140px;
 }
 
 /* Dynamic Connected Arrows and Lines */
@@ -140,49 +174,94 @@
   display: flex;
   align-items: center;
   flex-grow: 1;
-  height: 82px; /* Matches perfectly with vertical center of icons */
+  height: 82px;
   position: relative;
   pointer-events: none;
 }
 
 .eco-dotted-line {
   flex-grow: 1;
-  height: 1px;
-  border-top: 1.5px dashed #e2e8f0; /* Ultra-thin, light gray dotted line */
+  height: 1.5px;
+  background-image: linear-gradient(to right, #e2e8f0 50%, rgba(255, 255, 255, 0) 0%);
+  background-position: bottom;
+  background-size: 8px 1.5px;
+  background-repeat: repeat-x;
+  width: 0;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: 0.2s; /* Delays line draw after node appears */
+}
+
+.eco-flow-container.is-visible .eco-dotted-line {
+  width: 100%;
 }
 
 .eco-connector-arrow {
   width: 10px;
   height: 10px;
   color: #cbd5e1;
-  margin-left: -5px; /* Joins cleanly at end of dotted line */
+  margin-left: -5px;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.8s;
 }
 
-/* Explore Ecosystem CTA Button */
+.eco-flow-container.is-visible .eco-connector-arrow {
+  opacity: 1;
+}
+
+/* CTA Reveal & Button Magnetic Target */
 .eco-cta-wrapper {
   display: flex;
   justify-content: center;
   margin-top: 64px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.eco-cta-wrapper.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .eco-explore-btn {
+  position: relative;
   background-color: var(--eco-primary);
   color: #ffffff;
   font-size: 14px;
   font-weight: 600;
   padding: 14px 28px;
-  border-radius: 8px; /* Perfectly matched rounded corner profile */
+  border-radius: 8px;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  overflow: hidden;
+  transition: background-color 0.2s ease, box-shadow 0.3s ease, transform 0.2s ease-out;
+  box-shadow: 0 4px 14px rgba(0, 143, 117, 0.2);
+  will-change: transform;
 }
 
 .eco-explore-btn:hover {
   background-color: var(--eco-primary-hover);
-  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 143, 117, 0.3);
 }
 
-/* Complex Responsive Adaptability rules */
+/* Ripple Effect */
+.eco-ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: eco-ripple-animation 0.6s linear;
+  background-color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+
+@keyframes eco-ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Responsive Adaptations */
 @media (max-width: 1200px) {
   .eco-container {
     padding: 0 24px;
@@ -204,8 +283,9 @@
   .eco-node-wrapper {
     width: 100%;
   }
+  /* Disable line draw logic for grid layout */
   .eco-flow-connector {
-    display: none; /* Hide pathways for flawless grid transformation */
+    display: none;
   }
   .eco-header h2 {
     font-size: 28px;

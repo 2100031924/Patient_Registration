@@ -14777,3 +14777,247 @@ export default defineConfig({
 })
 
 
+## src/hooks/useSearchableDropdown.js
+
+js
+import { useEffect, useMemo, useRef, useState } from "react";
+
+export default function useSearchableDropdown({
+  options = [],
+  value = "",
+  name,
+  onChange,
+  onBlur,
+  closeOnOutsideClick = true,
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (!closeOnOutsideClick) return;
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+        if (onBlur) {
+          onBlur({ target: { name } });
+        }
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [closeOnOutsideClick, name, onBlur]);
+
+  const filteredOptions = useMemo(
+    () => options.filter((option) => option.toLowerCase().includes(searchValue.toLowerCase())),
+    [options, searchValue]
+  );
+
+  const selectOption = (nextValue) => {
+    onChange({ target: { name, value: nextValue } });
+    setIsOpen(false);
+    setSearchValue("");
+  };
+
+  const closeDropdown = () => {
+    setIsOpen(false);
+  };
+
+  const openDropdown = () => {
+    setIsOpen(true);
+  };
+
+  const toggleDropdown = () => {
+    if (isOpen && onBlur) {
+      onBlur({ target: { name } });
+    }
+    setIsOpen((prev) => !prev);
+  };
+
+  return {
+    dropdownRef,
+    isOpen,
+    searchValue,
+    setSearchValue,
+    filteredOptions,
+    selectOption,
+    closeDropdown,
+    openDropdown,
+    toggleDropdown,
+    hasValue: Boolean(value),
+  };
+}
+
+
+## src/utils/fileUploadHelpers.js
+
+js
+export function formatFileSize(bytes) {
+  if (bytes === 0) return "0 Bytes";
+
+  const kilobyte = 1024;
+  const sizes = ["Bytes", "KB", "MB"];
+  const unitIndex = Math.min(
+    Math.floor(Math.log(bytes) / Math.log(kilobyte)),
+    sizes.length - 1
+  );
+
+  return `${parseFloat((bytes / Math.pow(kilobyte, unitIndex)).toFixed(2))} ${sizes[unitIndex]}`;
+}
+
+export function buildUploadItem({ file, prefix, maxSizeMB }) {
+  const sizeMB = file.size / (1024 * 1024);
+
+  if (sizeMB > maxSizeMB) {
+    return {
+      error: `File "${file.name}" exceeds the ${maxSizeMB}MB limit.`,
+    };
+  }
+
+  const extensionIndex = file.name.lastIndexOf(".");
+  const hasExtension = extensionIndex > 0;
+
+  return {
+    item: {
+      id: `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
+      file,
+      name: hasExtension ? file.name.substring(0, extensionIndex) : file.name,
+      size: formatFileSize(file.size),
+      type: (hasExtension ? file.name.substring(extensionIndex + 1) : file.type || "FILE").toUpperCase(),
+      preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : "",
+      progress: 0,
+      status: "uploading",
+    },
+  };
+}
+
+export function renameUploadItem(items, id, nextName) {
+  return items.map((item) => (item.id === id ? { ...item, name: nextName } : item));
+}
+
+export function removeUploadItem(items, id) {
+  return items.filter((item) => item.id !== id);
+}
+
+export function updateUploadItem(items, id, updater) {
+  return items.map((item) => (item.id === id ? { ...item, ...updater(item) } : item));
+}
+
+============================================================
+CHANGE LOG — 2026-07-01
+============================================================
+
+=== CHANGE: Hero.jsx & Hero.css — Bug fixes & ARIA improvements ===
+
+Files changed:
+  src/components/landing/Hero/Hero.jsx
+  src/components/landing/Hero/Hero.css
+
+Fixes applied:
+
+1. Stale activeIndex after outside-click
+   - Problem: clicking outside the dropdown hid the list (setShowSuggestions(false))
+     but left activeIndex stale. If the user then clicked Search, handleSubmit
+     used the stale activeIndex instead of the typed text.
+   - Fix: introduced a single closeSuggestions() callback that resets both
+     showSuggestions → false AND activeIndex → -1. Used in outside-click handler,
+     Escape key, and after a selection.
+
+2. handleSubmit guarded on showSuggestions
+   - Problem: handleSubmit trusted activeIndex even when the dropdown was closed.
+   - Fix: added showSuggestions to the condition before reading activeIndex.
+
+3. Full combobox ARIA semantics
+   - Added role="combobox" on the search container, role="listbox" on the
+     suggestion list, role="option" on each item, plus aria-expanded,
+     aria-activedescendant, aria-autocomplete, aria-controls, aria-selected.
+   - Used useId() for stable, unique ID generation for listbox → option linkage.
+   - Added aria-label="Clear search" on the clear button.
+
+4. prefers-reduced-motion support for parallax
+   - JS side: reads window.matchMedia("(prefers-reduced-motion: reduce)") and
+     skips the rAF callback entirely when true.
+   - CSS side: added @media (prefers-reduced-motion: reduce) block that forces
+     floating-card transform to none and removes transition.
+
+5. Vendor-prefixed appearance on location <select>
+   - Added -webkit-appearance: none and -moz-appearance: none alongside the
+     existing appearance: none for Safari/older browser compatibility.
+
+6. will-change: transform on floating cards
+   - Added will-change: transform to the .floating-card CSS class to reduce
+     layout/paint cost during rAF-driven parallax updates.
+
+## CHANGE-002: SVG Icon Extraction (refactor)
+
+**Date:** 2026-07-01
+**Scope:** Extract all inline &lt;svg&gt; elements from 8 JSX component files into 14 dedicated React icon component files.
+
+**Files created (src/icons/):**
+  - `src/icons/LogoIcon.jsx`         — Heart/cross logo (currentColor)
+  - `src/icons/FooterLogoIcon.jsx`   — Footer gradient heart (linearGradient)
+  - `src/icons/TwitterIcon.jsx`      — X (Twitter) icon (fill="currentColor")
+  - `src/icons/LockIcon.jsx`         — Password lock (currentColor)
+  - `src/icons/BrandCrossIcon.jsx`   — Brand cross/plus (white rects)
+  - `src/icons/SuccessCheckIcon.jsx` — Success checkmark (#005d4e fill)
+  - `src/icons/AvatarPlaceholderIcon.jsx` — User avatar (currentColor)
+  - `src/icons/BadgeSparkIcon.jsx`   — Hero badge spark (currentColor fill)
+  - `src/icons/LabTubeIcon.jsx`      — Lab test tube (currentColor)
+  - `src/icons/DnaChipIcon.jsx`      — DNA + Microchip (currentColor)
+  - `src/icons/EcoPatientsIcon.jsx`  — Patients node (currentColor)
+  - `src/icons/EcoDoctorIcon.jsx`    — Doctor node (currentColor)
+  - `src/icons/EcoHospitalsIcon.jsx` — Hospitals node (currentColor)
+  - `src/icons/EcoArrowIcon.jsx`     — Connector arrow (currentColor)
+
+**Files modified:**
+
+1. `src/components/Sidebar/Sidebar.jsx`
+   - Added `import LogoIcon from "../../icons/LogoIcon"`
+   - Replaced inline heart/cross SVG with `&lt;LogoIcon size={20} className="logo-svg" /&gt;`
+
+2. `src/components/layout/Navbar/Navbar.jsx`
+   - Added `import LogoIcon from "../../icons/LogoIcon"`
+   - Replaced desktop logo SVG with `&lt;LogoIcon size={28} /&gt;`
+   - Replaced mobile logo SVG with `&lt;LogoIcon size={24} /&gt;`
+
+3. `src/components/layout/Footer/Footer.jsx`
+   - Added `import FooterLogoIcon from "../../icons/FooterLogoIcon"`
+   - Added `import TwitterIcon from "../../icons/TwitterIcon"`
+   - Replaced gradient heart SVG with `&lt;FooterLogoIcon size={34} /&gt;`
+   - Replaced X/Twitter SVG with `&lt;TwitterIcon size={15} /&gt;`
+
+4. `src/pages/Review/Review.jsx`
+   - Added `import BrandCrossIcon from "../../icons/BrandCrossIcon"`
+   - Added `import SuccessCheckIcon from "../../icons/SuccessCheckIcon"`
+   - Added `import LockIcon from "../../icons/LockIcon"`
+   - Replaced brand cross SVG with `&lt;BrandCrossIcon size={22} /&gt;`
+   - Replaced success check SVG with `&lt;SuccessCheckIcon size={48} /&gt;`
+   - Replaced both lock SVGs with `&lt;LockIcon size={18} className="input-icon" /&gt;`
+
+5. `src/components/landing/Testimonials/Testimonials.jsx`
+   - Added `import AvatarPlaceholderIcon from "../../../icons/AvatarPlaceholderIcon"`
+   - Replaced avatar placeholder SVG with `&lt;AvatarPlaceholderIcon className="fallback-svg" /&gt;`
+
+6. `src/components/landing/Statistics/Statistics.jsx`
+   - Added `import DnaChipIcon from "../../icons/DnaChipIcon"`
+   - Removed the local `DnaChipIcon` component (~35-line SVG)
+   - Usage unchanged: `&lt;DnaChipIcon /&gt;` continues to work from the import
+
+7. `src/components/landing/Ecosystem/Ecosystem.jsx`
+   - Added imports: `EcoPatientsIcon`, `EcoDoctorIcon`, `EcoHospitalsIcon`, `EcoArrowIcon`
+   - Restructured `nodes` array: `icon: (&lt;svg&gt;...&lt;/svg&gt;)` → `Icon: Eco*Icon`
+   - Reused `EcoDoctorIcon` for Laboratories, Pharmacies, and Insurance (identical SVGs)
+   - Updated render: destructured `{ Icon }` instead of `{ icon }`, rendered `&lt;Icon /&gt;`
+   - Replaced connector arrow SVG with `&lt;EcoArrowIcon className="eco-connector-arrow" /&gt;`
+
+8. `src/components/landing/Hero/Hero.jsx`
+   - Added `import BadgeSparkIcon from "../../../icons/BadgeSparkIcon"`
+   - Added `import LabTubeIcon from "../../../icons/LabTubeIcon"`
+   - Replaced badge spark SVG with `&lt;BadgeSparkIcon className="badge-spark" /&gt;`
+   - Replaced lab test tube SVG with `&lt;LabTubeIcon size={18} /&gt;`
+
+**Icon component pattern:**
+Each icon component accepts `size` and optional `className` props, uses `currentColor` for CSS color inheritance, and has zero external dependencies.
+
+

@@ -27,7 +27,7 @@
 }
 
 .testimonials-tagline {
-  color: #0d7a5c; /* Exact medical brand teal/emerald */
+  color: #0d7a5c;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -58,13 +58,31 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   width: 100%;
+  scroll-behavior: smooth;
+  /* Hide scrollbar but keep functionality */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.testimonials-track:focus {
+  outline: none;
+}
+
+.testimonials-track:focus-visible {
+  outline: 2px solid #0d7a5c;
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.testimonials-track::-webkit-scrollbar {
+  display: none;
 }
 
 /* Individual Card Styling */
 .testimonial-card {
   border: 1px solid #eef0f2;
   border-radius: 16px;
-  background: #f9fafb; /* Off-white card container background */
+  background: #f9fafb;
   padding: 24px;
   min-height: 220px;
   display: flex;
@@ -95,7 +113,7 @@
 }
 
 .star-icon-filled {
-  color: #ffb800; /* Rich medical gold star rating */
+  color: #ffb800;
   font-size: 13px;
 }
 
@@ -147,6 +165,7 @@
 
 .profile-avatar {
   object-fit: cover;
+  background-color: #e5e7eb;
 }
 
 .avatar-placeholder {
@@ -181,6 +200,63 @@
   margin-top: 1px;
 }
 
+/* --- Carousel Controls (Mobile/Tablet) --- */
+.carousel-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.carousel-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+}
+
+.carousel-arrow:hover:not(:disabled) {
+  background: #0d7a5c;
+  border-color: #0d7a5c;
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+.carousel-arrow:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.carousel-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: #d1d5db;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+  background: #0d7a5c;
+  width: 20px;
+  border-radius: 4px;
+}
+
 /* --- Responsive Adjustments --- */
 @media (max-width: 1200px) {
   .testimonials-container {
@@ -188,8 +264,20 @@
     gap: 32px;
   }
 
+  .testimonials-left-col {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
   .testimonials-description {
     max-width: 100%;
+  }
+
+  .carousel-controls {
+    margin-top: 0;
   }
 
   /* Carousel mode on tablet/mobile for smooth navigation */
@@ -202,17 +290,8 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  .testimonials-track::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  .testimonials-track::-webkit-scrollbar-thumb {
-    background: #e2e8f0;
-    border-radius: 10px;
-  }
-
   .testimonial-card {
-    flex: 0 0 280px;
+    flex: 0 0 300px;
     scroll-snap-align: start;
   }
 }
@@ -224,6 +303,17 @@
 
   .testimonials-container {
     padding: 0 20px;
+  }
+
+  .testimonials-left-col {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .carousel-controls {
+    margin-top: 8px;
+    width: 100%;
+    justify-content: center;
   }
 
   .testimonial-card {

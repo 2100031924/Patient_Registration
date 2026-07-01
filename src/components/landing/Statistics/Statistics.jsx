@@ -1,43 +1,6 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
+import DnaChipIcon from "../../../icons/DnaChipIcon";
 import "./Statistics.css";
-
-// Precision custom DNA + Microchip SVG matching the exact style of the target UI
-const DnaChipIcon = () => (
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    stroke="currentColor"
-    strokeWidth="1.8"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    {/* Left Helix Strand */}
-    <path d="M6 4C11 8, 11 12, 6 16C4 17.5, 4 19.5, 6 21" />
-    
-    {/* Right Helix Strand */}
-    <path d="M11 4C6 8, 6 12, 11 16" />
-
-    {/* Helix Connectors (Rungs) */}
-    <line x1="7.5" y1="7" x2="9.5" y2="7" />
-    <line x1="7.5" y1="13" x2="9.5" y2="13" />
-
-    {/* Microchip Body */}
-    <rect x="13" y="13" width="7" height="7" rx="1.5" />
-
-    {/* Microchip Pins */}
-    <path d="M15 10V13" />
-    <path d="M18 10V13" />
-    <path d="M15 20V23" />
-    <path d="M18 20V23" />
-    <path d="M10 15H13" />
-    <path d="M10 18H13" />
-    <path d="M20 15H23" />
-    <path d="M20 18H23" />
-  </svg>
-);
 
 const statsData = [
   {
@@ -67,46 +30,72 @@ const statsData = [
 ];
 
 function AnimatedCounter({ value, isVisible }) {
-  const numberMatch = value.match(/[\d.]+/);
+  const numberMatch = value.match(/^[\d.]+/);
   const matchedNumber = numberMatch?.[0] ?? null;
-  const initialDisplayValue = numberMatch ? "0" : value;
-  const [displayValue, setDisplayValue] = useState(initialDisplayValue);
+  const suffix = matchedNumber ? value.replace(matchedNumber, "") : "";
+  const isDecimal = matchedNumber?.includes(".") ?? false;
+  const target = matchedNumber ? parseFloat(matchedNumber) : 0;
+
+  const getInitialState = useCallback(() => {
+    if (!matchedNumber) return value;
+    return `${isDecimal ? "0.0" : "0"}${suffix}`;
+  }, [matchedNumber, isDecimal, suffix, value]);
+
+  const [displayValue, setDisplayValue] = useState(getInitialState);
+  const rafRef = useRef(null);
 
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible || !matchedNumber) return;
 
-    if (!matchedNumber) return;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
-    const target = parseFloat(matchedNumber);
-    const suffix = value.replace(matchedNumber, "");
-    const isDecimal = matchedNumber.includes(".");
+    if (prefersReducedMotion) {
+      setDisplayValue(value);
+      return;
+    }
 
-    const duration = 1500;
-    const frameRate = 1000 / 60;
-    const totalFrames = Math.round(duration / frameRate);
-    let frame = 0;
+    const duration = 1800;
+    let startTime = null;
 
-    const timer = setInterval(() => {
-      frame++;
-      const progress = frame / totalFrames;
-      const easeOutQuad = progress * (2 - progress);
-      const current = target * easeOutQuad;
+    const animate = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
 
-      if (frame >= totalFrames) {
-        setDisplayValue(value);
-        clearInterval(timer);
+      // easeOutExpo for a highly polished, decelerating animation
+      const easing = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      const current = target * easing;
+
+      const formattedCurrent = isDecimal
+        ? current.toFixed(1)
+        : Math.round(current).toString();
+
+      setDisplayValue(`${formattedCurrent}${suffix}`);
+
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(animate);
       } else {
-        setDisplayValue(
-          (isDecimal ? current.toFixed(1) : Math.round(current).toString()) +
-            suffix
-        );
+        setDisplayValue(value); // Guarantee exact final value
       }
-    }, frameRate);
+    };
 
-    return () => clearInterval(timer);
-  }, [isVisible, matchedNumber, value]);
+    rafRef.current = requestAnimationFrame(animate);
 
-  return <span className="stat-value">{displayValue}</span>;
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [isVisible, matchedNumber, value, target, isDecimal, suffix]);
+
+  return (
+    <>
+      <span className="stat-value" aria-hidden="true">
+        {displayValue}
+      </span>
+      <span className="sr-only">{value}</span>
+    </>
+  );
 }
 
 export default function Statistics() {
@@ -121,7 +110,10 @@ export default function Statistics() {
           observer.disconnect();
         }
       },
-      { threshold: 0.1 }
+      {
+        threshold: 0.2,
+        rootMargin: "0px 0px -50px 0px",
+      }
     );
 
     if (containerRef.current) {

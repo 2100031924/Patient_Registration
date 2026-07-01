@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, useId } from "react";
 import { Link } from "react-router-dom";
 import {
   FiCalendar,
@@ -12,6 +12,8 @@ import {
   FiPhoneCall
 } from "react-icons/fi";
 import doctorImg from "../../../assets/images/doctors/Decorations.png";
+import BadgeSparkIcon from "../../../icons/BadgeSparkIcon";
+import LabTubeIcon from "../../../icons/LabTubeIcon";
 import "./Hero.css";
 
 const POPULAR_SEARCH_TAGS = [
@@ -41,6 +43,9 @@ export default function Hero() {
   const visualContainerRef = useRef(null);
   const rafId = useRef(null);
   const latestEvent = useRef({ clientX: 0, clientY: 0 });
+  const prefersReducedMotion = useRef(false);
+
+  const listboxId = useId();
 
   const filteredSuggestions = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -57,17 +62,31 @@ export default function Hero() {
   }, [filteredSuggestions]);
 
   useEffect(() => {
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    prefersReducedMotion.current = mql.matches;
+    const handler = (e) => (prefersReducedMotion.current = e.matches);
+    mql.addEventListener?.("change", handler);
+    return () => mql.removeEventListener?.("change", handler);
+  }, []);
+
+  // Close dropdown + reset selection state consistently in one place
+  const closeSuggestions = useCallback(() => {
+    setShowSuggestions(false);
+    setActiveIndex(-1);
+  }, []);
+
+  useEffect(() => {
     function handleClickOutside(event) {
       if (
         searchWrapperRef.current &&
         !searchWrapperRef.current.contains(event.target)
       ) {
-        setShowSuggestions(false);
+        closeSuggestions();
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [closeSuggestions]);
 
   useEffect(() => {
     return () => {
@@ -76,6 +95,7 @@ export default function Hero() {
   }, []);
 
   const handleMouseMove = useCallback((e) => {
+    if (prefersReducedMotion.current) return;
     latestEvent.current = { clientX: e.clientX, clientY: e.clientY };
     if (rafId.current !== null) return;
     rafId.current = requestAnimationFrame(() => {
@@ -101,23 +121,23 @@ export default function Hero() {
 
   const handleSelectSuggestion = useCallback((value) => {
     setSearchQuery(value);
-    setShowSuggestions(false);
-    setActiveIndex(-1);
-  }, []);
+    closeSuggestions();
+  }, [closeSuggestions]);
 
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      const chosen =
-        activeIndex >= 0 && filteredSuggestions[activeIndex]
-          ? filteredSuggestions[activeIndex].name
-          : searchQuery.trim();
+      const hasValidActiveSuggestion =
+        showSuggestions && activeIndex >= 0 && filteredSuggestions[activeIndex];
+      const chosen = hasValidActiveSuggestion
+        ? filteredSuggestions[activeIndex].name
+        : searchQuery.trim();
       if (!chosen) return;
       setSearchQuery(chosen);
-      setShowSuggestions(false);
-      setActiveIndex(-1);
+      closeSuggestions();
+      // TODO: trigger actual search/navigation with { chosen, selectedLocation }
     },
-    [activeIndex, filteredSuggestions, searchQuery]
+    [activeIndex, filteredSuggestions, searchQuery, showSuggestions, closeSuggestions]
   );
 
   const handleKeyDown = useCallback(
@@ -137,12 +157,15 @@ export default function Hero() {
           handleSelectSuggestion(filteredSuggestions[activeIndex].name);
         }
       } else if (e.key === "Escape") {
-        setShowSuggestions(false);
-        setActiveIndex(-1);
+        closeSuggestions();
       }
     },
-    [showSuggestions, filteredSuggestions, activeIndex, handleSelectSuggestion]
+    [showSuggestions, filteredSuggestions, activeIndex, handleSelectSuggestion, closeSuggestions]
   );
+
+  const dropdownVisible =
+    showSuggestions &&
+    (searchQuery.trim().length > 0 || filteredSuggestions.length > 0);
 
   return (
     <section className="hero-section">
@@ -152,19 +175,7 @@ export default function Hero() {
         <div className="hero-grid">
           <div className="hero-content">
             <div className="hero-badge">
-              <svg
-                className="badge-spark"
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 2L14.8 9.2L22 12L14.8 14.8L12 22L9.2 14.8L2 12L9.2 9.2L12 2Z"
-                  fill="currentColor"
-                />
-              </svg>
+              <BadgeSparkIcon className="badge-spark" />
               <span>AI-Powered Healthcare Ecosystem</span>
             </div>
 
@@ -293,18 +304,7 @@ export default function Hero() {
                 }}
               >
                 <div className="f-icon-box bg-blue">
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M10 2v8M14 2v8M8.5 10h7M12 2v18M4.5 20.5a3.5 3.5 0 0 0 7 0H4.5Z" />
-                  </svg>
+                  <LabTubeIcon size={18} />
                 </div>
                 <div className="f-text-box">
                   <h4>Lab Tests</h4>
@@ -339,7 +339,13 @@ export default function Hero() {
               <FiChevronDown className="select-arrow-custom" />
             </div>
 
-            <div className="search-field-main">
+            <div
+              className="search-field-main"
+              role="combobox"
+              aria-haspopup="listbox"
+              aria-owns={listboxId}
+              aria-expanded={dropdownVisible}
+            >
               <FiSearch className="field-icon-search" />
               <input
                 type="text"
@@ -352,48 +358,60 @@ export default function Hero() {
                 onKeyDown={handleKeyDown}
                 placeholder="Search Doctors, Specialities, Clinics and Hospitals..."
                 aria-label="Search Medical Services"
+                aria-autocomplete="list"
+                aria-controls={listboxId}
+                aria-activedescendant={
+                  activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : undefined
+                }
+                role="searchbox"
               />
               {searchQuery && (
                 <button
                   type="button"
                   className="clear-query-btn"
                   onClick={() => setSearchQuery("")}
+                  aria-label="Clear search"
                 >
                   &times;
                 </button>
               )}
 
-              {showSuggestions &&
-                (searchQuery.trim().length > 0 ||
-                  filteredSuggestions.length > 0) && (
-                  <div className="search-suggestions-dropdown">
-                    {filteredSuggestions.length > 0 ? (
-                      <div className="suggestions-list">
-                        {filteredSuggestions.map((item, idx) => (
-                          <button
-                            key={idx}
-                            type="button"
-                            className={`suggestion-item-option ${idx === activeIndex ? "active" : ""}`}
-                            onClick={() => handleSelectSuggestion(item.name)}
-                            onMouseEnter={() => setActiveIndex(idx)}
-                          >
-                            <div className="sug-left">
-                              <span className="sug-name">{item.name}</span>
-                              <span className="sug-specialty">{item.specialty}</span>
-                            </div>
-                            <span className={`sug-badge-type type-${item.type.toLowerCase()}`}>
-                              {item.type}
-                            </span>
-                          </button>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="suggestions-empty">
-                        <p>No results found matching "{searchQuery}"</p>
-                      </div>
-                    )}
-                  </div>
-                )}
+              {dropdownVisible && (
+                <div className="search-suggestions-dropdown">
+                  {filteredSuggestions.length > 0 ? (
+                    <div
+                      className="suggestions-list"
+                      role="listbox"
+                      id={listboxId}
+                    >
+                      {filteredSuggestions.map((item, idx) => (
+                        <button
+                          key={idx}
+                          id={`${listboxId}-option-${idx}`}
+                          type="button"
+                          role="option"
+                          aria-selected={idx === activeIndex}
+                          className={`suggestion-item-option ${idx === activeIndex ? "active" : ""}`}
+                          onClick={() => handleSelectSuggestion(item.name)}
+                          onMouseEnter={() => setActiveIndex(idx)}
+                        >
+                          <div className="sug-left">
+                            <span className="sug-name">{item.name}</span>
+                            <span className="sug-specialty">{item.specialty}</span>
+                          </div>
+                          <span className={`sug-badge-type type-${item.type.toLowerCase()}`}>
+                            {item.type}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="suggestions-empty">
+                      <p>No results found matching "{searchQuery}"</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <button type="submit" className="hero-search-btn">

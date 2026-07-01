@@ -1,8 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
+/* Advanced Logic: CSS Custom Properties for maintainability */
+:root {
+  --wc-teal-deep: #0b7a61;
+  --wc-teal-pastel: #e6f7f4;
+  --wc-green-bright: #10b981;
+  --wc-text-dark: #111827;
+  --wc-text-muted: #64748b;
+  --wc-border-light: #e5e7eb;
+  --wc-border-hover: #cbd5e1;
+  --wc-bg-solid: #ffffff;
+  --wc-transition-base: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .whychoose-section {
   padding: 80px 0;
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
@@ -21,7 +34,7 @@
 .section-label {
   font-size: 13px;
   font-weight: 700;
-  color: #0b7a61;
+  color: var(--wc-teal-deep);
   letter-spacing: 0.8px;
   text-transform: uppercase;
   display: inline-block;
@@ -31,34 +44,56 @@
 .whychoose-header h2 {
   font-size: 36px;
   font-weight: 800;
-  color: #111827;
+  color: var(--wc-text-dark);
   margin: 0;
   letter-spacing: -0.5px;
 }
 
-/* 4-Column Responsive Grid */
+/* Advanced Logic: Auto-fit grid handles responsive breakpoints natively */
 .whychoose-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
 }
 
 /* Base Card Styling */
 .whychoose-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--wc-bg-solid);
+  border: 1px solid var(--wc-border-light);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.015);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: var(--wc-transition-base);
   display: flex;
   flex-direction: column;
+
+  /* Advanced Logic: Scroll Reveal Initial State */
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.whychoose-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s ease, transform 0.6s var(--wc-transition-base), box-shadow 0.4s ease, border-color 0.4s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Accessibility Focus State */
+.whychoose-card:focus-within {
+  outline: 2px solid var(--wc-teal-deep);
+  outline-offset: 4px;
 }
 
 .whychoose-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.05);
-  border-color: #cbd5e1;
+  box-shadow: 0 16px 32px rgba(11, 122, 97, 0.08);
+  border-color: var(--wc-border-hover);
+}
+
+/* Keep hover transform from conflicting with is-visible if already visible */
+.whychoose-card.is-visible:hover {
+  transform: translateY(-6px);
 }
 
 /* Top Illustration Area */
@@ -72,7 +107,6 @@
   overflow: hidden;
 }
 
-/* Centered static images inside visual containers */
 .card-image {
   max-width: 100%;
   max-height: 100%;
@@ -101,12 +135,11 @@
   margin-bottom: 16px;
 }
 
-/* Modern pastel circle background icon badge */
 .icon-badge {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #e6f7f4; /* Soft signature healthcare-green pastel */
+  background: var(--wc-teal-pastel);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,26 +148,24 @@
 
 .card-icon {
   font-size: 20px;
-  color: #0b7a61; /* Deep signature teal */
+  color: var(--wc-teal-deep);
 }
 
-/* Card Titles */
 .whychoose-card-body h3 {
   font-size: 16px;
   font-weight: 800;
-  color: #111827;
+  color: var(--wc-text-dark);
   margin: 0;
   line-height: 1.25;
 }
 
-/* Descriptions with standard teal branding */
 .card-description {
   font-size: 13px;
   font-weight: 600;
-  color: #0b7a61;
+  color: var(--wc-teal-deep);
   line-height: 1.5;
   margin: 0 0 20px 0;
-  min-height: 38px; /* Standardize alignment across cards */
+  min-height: 38px;
 }
 
 /* Bullet Points Container */
@@ -144,13 +175,12 @@
   margin: auto 0 0 0;
 }
 
-/* Bullet list text elements */
 .whychoose-points li {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #64748b;
+  color: var(--wc-text-muted);
   margin-bottom: 10px;
   font-weight: 500;
 }
@@ -159,25 +189,14 @@
   margin-bottom: 0;
 }
 
-/* Bright green checkmarks */
 .check-icon {
-  color: #10b981;
+  color: var(--wc-green-bright);
   font-size: 14px;
   flex-shrink: 0;
 }
 
-/* Responsive Media Queries */
-@media (max-width: 1200px) {
-  .whychoose-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-}
-
+/* Simplified Media Queries relying on auto-fit, only adjusting typography/spacing on mobile */
 @media (max-width: 680px) {
-  .whychoose-grid {
-    grid-template-columns: 1fr;
-  }
   .whychoose-header h2 {
     font-size: 28px;
   }

@@ -1,3 +1,4 @@
+import { useRef, useState, useEffect, useMemo } from "react";
 import {
   LuUser,
   LuDna,
@@ -9,7 +10,7 @@ import {
 } from "react-icons/lu";
 import "./HealthcareServices.css";
 
-const services = [
+const servicesData = [
   {
     id: "doctor-consultation",
     icon: LuUser,
@@ -49,8 +50,32 @@ const services = [
 ];
 
 export default function HealthcareServices() {
+  const sectionRef = useRef(null);
+  const [visibleCount, setVisibleCount] = useState(0);
+  const services = useMemo(() => servicesData, []);
+
+  // Advanced Intersection Observer for staggered scroll-triggered animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          services.forEach((_, idx) => {
+            setTimeout(() => {
+              setVisibleCount((prev) => Math.max(prev, idx + 1));
+            }, idx * 100);
+          });
+          if (sectionRef.current) observer.unobserve(sectionRef.current);
+        }
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -50px 0px" }
+    );
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, [services]);
+
   return (
-    <section className="services">
+    <section className="services" ref={sectionRef}>
       <div className="services__container">
         <div className="services__heading">
           <span className="services__label">
@@ -64,8 +89,12 @@ export default function HealthcareServices() {
         </div>
 
         <div className="services__grid">
-          {services.map(({ id, icon: Icon, title, desc }) => (
-            <article className="service" key={id}>
+          {services.map(({ id, icon: Icon, title, desc }, index) => (
+            <article
+              className={`service ${index < visibleCount ? "is-visible" : ""}`}
+              key={id}
+              style={{ transitionDelay: `${index * 60}ms` }}
+            >
               <div className="service__icon">
                 <Icon />
               </div>
@@ -75,7 +104,16 @@ export default function HealthcareServices() {
                 <p>{desc}</p>
               </div>
 
-              <button className="service__arrow" aria-label={`Learn more about ${title}`}>
+              {/*
+                Stretched-link pattern: The button acts as the primary interactive element.
+                Its ::after pseudo-element covers the entire card, making the whole card clickable
+                while maintaining strict accessibility tab-order and screen-reader semantics.
+              */}
+              <button
+                className="service__arrow"
+                aria-label={`Learn more about ${title}`}
+                onClick={() => console.log(`Navigating to ${id}`)}
+              >
                 <LuArrowRight />
               </button>
             </article>

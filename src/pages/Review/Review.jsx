@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "../../context/FormContext";
 import { FiCheck, FiX, FiAlertTriangle, FiEye, FiEyeOff, FiCopy } from "react-icons/fi";
 import { LuRefreshCw } from "react-icons/lu";
+import BrandCrossIcon from "../../icons/BrandCrossIcon";
+import SuccessCheckIcon from "../../icons/SuccessCheckIcon";
+import LockIcon from "../../icons/LockIcon";
 import "./Review.css";
 
 const CHARSET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -184,18 +187,13 @@ export default function Review() {
       <div className="success-wrapper">
         <div className="brand-header">
           <div className="logo-icon teal-bg">
-            <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" width="22" height="22">
-              <rect x="15" y="4" width="6" height="28" rx="3" fill="white" />
-              <rect x="4" y="15" width="28" height="6" rx="3" fill="white" />
-            </svg>
+            <BrandCrossIcon size={22} />
           </div>
           <div className="logo-text"><h3>MediConnect</h3><span>Healthcare Ecosystem</span></div>
         </div>
         <div className="success-card">
           <div className="success-badge">
-            <svg viewBox="0 0 24 24" width="48" height="48" fill="none">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#005d4e" />
-            </svg>
+            <SuccessCheckIcon size={48} />
           </div>
           <h2>Account Created Successfully!</h2>
           <p className="success-description">Your patient account has been created successfully. You can now access your healthcare dashboard and manage your records securely.</p>
@@ -342,9 +340,7 @@ export default function Review() {
             <div className="field">
               <label>Create New Password</label>
               <div className="input-wrap">
-                <svg className="input-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
+                <LockIcon size={18} className="input-icon" />
                 <input type={showPassword ? "text" : "password"} name="password" placeholder="**********" value={formData.password} onChange={(e) => updateForm({ password: e.target.value })} />
                 <button type="button" className="eye-toggle" onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? <FiEyeOff /> : <FiEye />}
@@ -354,9 +350,7 @@ export default function Review() {
             <div className="field">
               <label>Confirm Password</label>
               <div className={`input-wrap ${showConfirmMismatch ? "error" : ""}`}>
-                <svg className="input-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
+                <LockIcon size={18} className="input-icon" />
                 <input type={showConfirmPassword ? "text" : "password"} name="confirmPassword" placeholder="**********" value={formData.confirmPassword} onChange={(e) => updateForm({ confirmPassword: e.target.value })} />
                 <button type="button" className="eye-toggle" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                   {showConfirmPassword ? <FiEyeOff /> : <FiEye />}

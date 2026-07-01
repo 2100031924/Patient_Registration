@@ -1,10 +1,12 @@
 .cta-section {
-  padding: 80px 0;
+  padding: 120px 0;
   background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  position: relative;
 }
 
 .cta-container {
@@ -16,14 +18,33 @@
   grid-template-columns: 1.1fr 0.9fr;
   gap: 80px;
   align-items: center;
+  position: relative;
+  z-index: 2;
 }
 
-/* Image Visual & Bottom Fade Effect */
 .cta-visual {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.cta-visual-glow {
+  position: absolute;
+  width: 70%;
+  height: 70%;
+  background: radial-gradient(circle, rgba(13, 138, 114, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+  z-index: 0;
+  filter: blur(40px);
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.1); opacity: 1; }
 }
 
 .cta-img {
@@ -31,17 +52,38 @@
   max-width: 550px;
   height: auto;
   object-fit: cover;
-  /* Seamless fade out to match the clean white background */
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0) 100%);
   -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0) 100%);
+  position: relative;
+  z-index: 1;
 }
 
-/* Typography Styling */
 .cta-content {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+}
+
+.cta-heading, .cta-subheading, .cta-actions {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cta-heading.is-visible,
+.cta-subheading.is-visible,
+.cta-actions.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cta-subheading.is-visible {
+  transition-delay: 0.15s;
+}
+
+.cta-actions.is-visible {
+  transition-delay: 0.3s;
 }
 
 .cta-heading {
@@ -60,7 +102,6 @@
   font-weight: 400;
 }
 
-/* Actions & Buttons (Stacked vertically to match reference) */
 .cta-actions {
   display: flex;
   flex-direction: column;
@@ -69,9 +110,7 @@
   max-width: 380px;
 }
 
-.cta-btn-primary {
-  background: #0d8a72; /* Exact clinical teal/emerald */
-  color: #ffffff;
+.cta-btn-primary, .cta-btn-secondary {
   padding: 16px;
   border-radius: 8px;
   font-size: 15px;
@@ -81,28 +120,28 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition: background-color 0.2s ease, transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+  will-change: transform;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-btn-primary {
+  background: #0d8a72;
+  color: #ffffff;
   border: 1px solid #0d8a72;
+  box-shadow: 0 4px 14px rgba(13, 138, 114, 0.25);
 }
 
 .cta-btn-primary:hover {
   background: #0a735f;
+  box-shadow: 0 6px 20px rgba(13, 138, 114, 0.35);
 }
 
 .cta-btn-secondary {
   background: #ffffff;
   color: #0d8a72;
-  padding: 16px;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 600;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
   border: 1.5px solid #0d8a72;
-  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .cta-btn-secondary:hover {
@@ -111,9 +150,14 @@
 
 .btn-icon {
   font-size: 18px;
+  transition: transform 0.3s ease;
 }
 
-/* Responsive Rules */
+.cta-btn-primary:hover .btn-icon,
+.cta-btn-secondary:hover .btn-icon {
+  transform: scale(1.2);
+}
+
 @media (max-width: 968px) {
   .cta-container {
     grid-template-columns: 1fr;
@@ -127,5 +171,9 @@
 
   .cta-actions {
     margin: 0 auto;
+  }
+
+  .cta-visual {
+    transform: none !important;
   }
 }

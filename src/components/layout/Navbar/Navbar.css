@@ -8,6 +8,16 @@
   transition: all 0.3s ease;
 }
 
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border-bottom-color: #e2e8f0;
+}
+
+.navbar.scrolled .navbar-container {
+  height: 70px;
+}
+
 .navbar-container {
   max-width: 1440px;
   margin: 0 auto;
@@ -16,6 +26,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: height 0.3s ease;
 }
 
 .navbar-brand {
@@ -67,6 +78,7 @@
   display: flex;
   align-items: center;
   gap: 28px;
+  height: 100%;
 }
 
 .nav-link, .nav-dropdown-trigger {
@@ -80,9 +92,12 @@
   gap: 4px;
   transition: all 0.2s ease;
   padding: 8px 4px;
+  background: transparent;
+  border: none;
+  font-family: inherit;
 }
 
-.nav-link:hover, .nav-dropdown-trigger:hover {
+.nav-link:hover, .nav-dropdown-trigger:hover, .nav-dropdown-trigger.active {
   color: #005d4e;
 }
 
@@ -90,14 +105,60 @@
   color: #005d4e;
 }
 
+.nav-dropdown {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
 .nav-dropdown-icon {
   font-size: 12px;
   color: #94a3b8;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
-.nav-dropdown-trigger:hover .nav-dropdown-icon {
-  transform: translateY(1.5px);
+.nav-dropdown-icon.rotate {
+  transform: rotate(180deg);
+  color: #005d4e;
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: #ffffff;
+  min-width: 240px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+  padding: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.nav-dropdown-menu.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.nav-dropdown-item {
+  display: block;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.nav-dropdown-item:hover {
+  background: #f8fafc;
   color: #005d4e;
 }
 
@@ -157,6 +218,8 @@
   font-size: 20px;
   color: #005d4e;
   cursor: pointer;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Mobile Drawer Styles */
@@ -182,6 +245,7 @@
   right: 0;
   bottom: 0;
   width: 320px;
+  max-width: 85vw;
   background: #ffffff;
   z-index: 1000;
   box-shadow: -10px 0 40px rgba(0, 0, 0, 0.15);
@@ -216,6 +280,12 @@
   font-size: 18px;
   color: #64748b;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-close-btn:hover {
+  background: #f1f5f9;
+  color: #334155;
 }
 
 .mobile-links-container {
@@ -223,7 +293,7 @@
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
   overflow-y: auto;
 }
 
@@ -234,23 +304,74 @@
   text-decoration: none;
   padding: 12px 0;
   border-bottom: 1px solid #f8fafc;
+  transition: color 0.2s ease;
+}
+
+.mobile-nav-link:hover {
+  color: #005d4e;
+}
+
+.mobile-nav-expandable-wrapper {
+  border-bottom: 1px solid #f8fafc;
 }
 
 .mobile-nav-expandable {
+  width: 100%;
+  background: transparent;
+  border: none;
+  font-family: inherit;
   font-size: 16px;
   font-weight: 700;
   color: #334155;
   padding: 12px 0;
-  border-bottom: 1px solid #f8fafc;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
+.mobile-nav-expandable:hover {
+  color: #005d4e;
+}
+
+/* Overriding previous ::after pseudo element to use chevron icon smoothly */
 .mobile-nav-expandable::after {
-  content: "\2192";
-  color: #94a3b8;
+  content: none;
+}
+
+.accordion-icon {
+  font-size: 16px;
+  transition: transform 0.25s ease;
+}
+
+.accordion-icon.rotate {
+  transform: rotate(180deg);
+}
+
+.mobile-accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+
+.mobile-accordion-content.open {
+  max-height: 250px; /* Adjust based on content length */
+}
+
+.mobile-sublink {
+  display: block;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.mobile-sublink:hover {
+  color: #005d4e;
+  background: #f8fafc;
 }
 
 .mobile-menu-footer {
@@ -274,6 +395,11 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  transition: background 0.2s ease;
+}
+
+.mobile-btn-primary:hover {
+  background: #00493d;
 }
 
 .mobile-btn-secondary {
@@ -286,6 +412,12 @@
   font-weight: 700;
   text-decoration: none;
   border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.mobile-btn-secondary:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
 }
 
 @media (max-width: 1024px) {

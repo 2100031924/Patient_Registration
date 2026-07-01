@@ -1,68 +1,114 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 
-export default function useSearchableDropdown({
-  options = [],
-  value = "",
-  name,
-  onChange,
-  onBlur,
-  closeOnOutsideClick = true,
-}) {
+const useSearchableDropdown = ({ options, value, name, onChange, onBlur }) => {
+  const dropdownRef = useRef(null);
+  const listRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const dropdownRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (!closeOnOutsideClick) return;
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-        if (onBlur) {
-          onBlur({ target: { name } });
-        }
+  const filteredOptions = useMemo(() => {
+    if (!searchValue) return options;
+    const lowerSearch = searchValue.toLowerCase();
+    return options.filter((opt) =>
+      String(opt).toLowerCase().includes(lowerSearch)
+    );
+  }, [options, searchValue]);
+
+  const toggleDropdown = useCallback(() => {
+    setIsOpen((prev) => {
+      if (!prev) {
+        setSearchValue("");
+        setActiveIndex(0);
       }
-    }
+      return !prev;
+    });
+  }, []);
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [closeOnOutsideClick, name, onBlur]);
-
-  const filteredOptions = useMemo(
-    () => options.filter((option) => option.toLowerCase().includes(searchValue.toLowerCase())),
-    [options, searchValue]
+  const selectOption = useCallback(
+    (option) => {
+      if (onChange) onChange({ target: { name, value: option } });
+      if (onBlur) onBlur({ target: { name, value: option } });
+      setIsOpen(false);
+    },
+    [name, onChange, onBlur]
   );
 
-  const selectOption = (nextValue) => {
-    onChange({ target: { name, value: nextValue } });
-    setIsOpen(false);
-    setSearchValue("");
-  };
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (!isOpen && (e.key === "Enter" || e.key === " " || e.key === "ArrowDown")) {
+        e.preventDefault();
+        setIsOpen(true);
+        return;
+      }
 
-  const closeDropdown = () => {
-    setIsOpen(false);
-  };
+      if (!isOpen) return;
 
-  const openDropdown = () => {
-    setIsOpen(true);
-  };
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          setActiveIndex((prev) =>
+            prev + 1 >= filteredOptions.length ? 0 : prev + 1
+          );
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          setActiveIndex((prev) =>
+            prev - 1 < 0 ? filteredOptions.length - 1 : prev - 1
+          );
+          break;
+        case "Enter":
+          e.preventDefault();
+          if (filteredOptions[activeIndex]) {
+            selectOption(filteredOptions[activeIndex]);
+          }
+          break;
+        case "Escape":
+          e.preventDefault();
+          setIsOpen(false);
+          break;
+        default:
+          break;
+      }
+    },
+    [isOpen, filteredOptions, activeIndex, selectOption]
+  );
 
-  const toggleDropdown = () => {
-    if (isOpen && onBlur) {
-      onBlur({ target: { name } });
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [searchValue]);
+
+  useEffect(() => {
+    if (!isOpen || !listRef.current) return;
+    const activeEl = listRef.current.querySelector('[data-active="true"]');
+    if (activeEl) {
+      activeEl.scrollIntoView({ block: "nearest", behavior: "smooth" });
     }
-    setIsOpen((prev) => !prev);
-  };
+  }, [activeIndex, isOpen]);
 
   return {
     dropdownRef,
+    listRef,
     isOpen,
     searchValue,
     setSearchValue,
     filteredOptions,
+    activeIndex,
+    setActiveIndex,
     selectOption,
-    closeDropdown,
-    openDropdown,
     toggleDropdown,
-    hasValue: Boolean(value),
+    handleKeyDown,
   };
-}
+};
+
+export default useSearchableDropdown;
