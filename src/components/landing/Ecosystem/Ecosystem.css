@@ -1,0 +1,231 @@
+/* Premium design tokens & layout alignments */
+:root {
+  --eco-primary: #008f75; /* Exact clinical brand green matched from your image */
+  --eco-primary-hover: #007660;
+  --eco-text-main: #111827; /* Deep Charcoal Black */
+  --eco-text-sub: #6b7280; /* Perfect Slate Gray for description text */
+  --eco-border-light: #f1f5f9;
+}
+
+.eco-section {
+  padding: 80px 0 100px;
+  background-color: #ffffff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+.eco-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header Text Styles */
+.eco-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 64px;
+}
+
+.section-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: var(--eco-primary);
+  margin-bottom: 16px;
+}
+
+.eco-header h2 {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--eco-text-main);
+  margin: 0 0 16px;
+  line-height: 1.25;
+  letter-spacing: -0.6px;
+}
+
+.eco-subtitle {
+  font-size: 14px;
+  color: var(--eco-text-sub);
+  line-height: 1.5;
+  font-weight: 500;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+/* Horizontal Flow Layout with Connectors */
+.eco-flow-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+}
+
+.eco-node-wrapper {
+  flex-shrink: 0;
+  width: 12%; /* Perfect spacing ratio matching image */
+  display: flex;
+  justify-content: center;
+}
+
+.eco-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Outer Ring & Hover Glow Structure */
+.eco-node-circle-outer {
+  position: relative;
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 20px;
+  z-index: 2;
+}
+
+.eco-node-icon {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--eco-primary);
+  transition: all 0.3s ease;
+}
+
+.eco-node-icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+/* Smooth Interactive Micro-Animations */
+.eco-node:hover .eco-node-circle-outer {
+  transform: translateY(-4px);
+  border-color: var(--eco-primary);
+  box-shadow: 0 10px 20px rgba(0, 143, 117, 0.06);
+}
+
+/* Typography for Node Labels */
+.eco-node-text h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--eco-text-main);
+  margin: 0 0 8px;
+  letter-spacing: -0.2px;
+}
+
+.eco-node-text p {
+  font-size: 11px;
+  color: var(--eco-text-sub);
+  line-height: 1.4;
+  margin: 0;
+  max-width: 140px; /* Forces beautiful word-wrap exactly like image */
+}
+
+/* Dynamic Connected Arrows and Lines */
+.eco-flow-connector {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  height: 82px; /* Matches perfectly with vertical center of icons */
+  position: relative;
+  pointer-events: none;
+}
+
+.eco-dotted-line {
+  flex-grow: 1;
+  height: 1px;
+  border-top: 1.5px dashed #e2e8f0; /* Ultra-thin, light gray dotted line */
+}
+
+.eco-connector-arrow {
+  width: 10px;
+  height: 10px;
+  color: #cbd5e1;
+  margin-left: -5px; /* Joins cleanly at end of dotted line */
+}
+
+/* Explore Ecosystem CTA Button */
+.eco-cta-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 64px;
+}
+
+.eco-explore-btn {
+  background-color: var(--eco-primary);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 14px 28px;
+  border-radius: 8px; /* Perfectly matched rounded corner profile */
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.eco-explore-btn:hover {
+  background-color: var(--eco-primary-hover);
+  transform: translateY(-1px);
+}
+
+/* Complex Responsive Adaptability rules */
+@media (max-width: 1200px) {
+  .eco-container {
+    padding: 0 24px;
+  }
+  .eco-node-wrapper {
+    width: 14%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .desktop-br {
+    display: none;
+  }
+  .eco-flow-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px 24px;
+  }
+  .eco-node-wrapper {
+    width: 100%;
+  }
+  .eco-flow-connector {
+    display: none; /* Hide pathways for flawless grid transformation */
+  }
+  .eco-header h2 {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 640px) {
+  .eco-section {
+    padding: 50px 0 70px;
+  }
+  .eco-flow-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .eco-header {
+    margin-bottom: 40px;
+  }
+  .eco-header h2 {
+    font-size: 24px;
+  }
+  .eco-subtitle {
+    font-size: 13px;
+  }
+}

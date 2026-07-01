@@ -120,7 +120,7 @@ export default function AdditionalInfo() {
   const isValid = Object.keys(errors).length === 0;
 
   useEffect(() => {
-    markStepComplete("/additional-info", isValid);
+    markStepComplete("/register/additional-info", isValid);
   }, [isValid, markStepComplete]);
 
   const physicalActivityOptions = [
@@ -373,13 +373,13 @@ export default function AdditionalInfo() {
       </div>
 
       <div className="footer-actions">
-        <button className="secondary-skip-btn" onClick={() => navigate("/medical-history")}>Skip for now</button>
+          <button className="secondary-skip-btn" onClick={() => navigate("/register/medical-history")}>Skip for now</button>
         <div className="right-group">
-          <button className="plain-back-btn" onClick={() => navigate("/")}>Go Back</button>
+          <button className="plain-back-btn" onClick={() => navigate("/register")}>Go Back</button>
           <button
             className="primary-dark-btn"
             disabled={!isValid}
-            onClick={() => navigate("/medical-history")}
+            onClick={() => navigate("/register/medical-history")}
           >
             Add Medical History
           </button>

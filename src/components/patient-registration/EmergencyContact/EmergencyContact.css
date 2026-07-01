@@ -1,0 +1,85 @@
+.emergency-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px 32px;
+}
+
+.emergency-grid .field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.emergency-grid .field label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.emergency-grid .field label .required {
+  color: #ef4444;
+}
+
+.emergency-grid .input-wrap {
+  height: 52px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: #ffffff;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.emergency-grid .input-wrap:focus-within {
+  border-color: #005d4e;
+  box-shadow: 0 0 0 3px rgba(0, 93, 78, 0.1);
+}
+
+.emergency-grid .input-wrap.error {
+  border-color: #ef4444 !important;
+  background-color: #fff8f8;
+}
+
+.emergency-grid .input-icon {
+  color: #94a3b8;
+  font-size: 18px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.emergency-grid .input-wrap input,
+.emergency-grid .input-wrap select {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14.5px;
+  color: #334155;
+  background: transparent;
+  font-weight: 500;
+}
+
+.emergency-grid .input-wrap select {
+  cursor: pointer;
+  height: 100%;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  background-size: 16px;
+  padding-right: 28px;
+}
+
+.emergency-grid .error-message {
+  color: #ef4444;
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+  .emergency-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}

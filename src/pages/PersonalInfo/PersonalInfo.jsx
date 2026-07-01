@@ -68,7 +68,7 @@ export default function PersonalInfo() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    markStepComplete("/", isValid);
+    markStepComplete("/register", isValid);
   }, [isValid, markStepComplete]);
 
   return (
@@ -202,7 +202,7 @@ export default function PersonalInfo() {
         <button
           className="submit-step-btn"
           disabled={!isValid}
-          onClick={() => navigate("/additional-info")}
+          onClick={() => navigate("/register/additional-info")}
         >
           Add Additional Information
         </button>

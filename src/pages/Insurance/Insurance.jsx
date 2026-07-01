@@ -2,6 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "../../context/FormContext";
 import { useState, useRef, useEffect } from "react";
 import {
+  buildUploadItem,
+  removeUploadItem,
+  renameUploadItem,
+  updateUploadItem,
+} from "../../utils/fileUploadHelpers";
+import {
   FiChevronDown,
   FiAlertCircle,
   FiInbox,
@@ -52,14 +58,6 @@ export default function Insurance() {
     p.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const formatFileSize = (bytes) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  };
-
   const handleFiles = (files) => {
     if (!files || files.length === 0) return;
     const fileList = Array.from(files);
@@ -67,28 +65,16 @@ export default function Insurance() {
     const updatedFiles = [...(formData.insuranceFiles || [])];
 
     fileList.forEach((file) => {
-      const sizeMB = file.size / (1024 * 1024);
-      if (sizeMB > 5) {
-        alert(`File "${file.name}" exceeds the 5MB size limit.`);
+      const { item: newRecord, error } = buildUploadItem({
+        file,
+        prefix: "ins",
+        maxSizeMB: 5,
+      });
+
+      if (error) {
+        alert(error);
         return;
       }
-
-      const fileId = "ins_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
-      const isImg = file.type.startsWith("image/");
-      const previewUrl = isImg ? URL.createObjectURL(file) : "";
-
-      const fileExtension = file.name.substring(file.name.lastIndexOf(".") + 1).toUpperCase();
-
-      const newRecord = {
-        id: fileId,
-        file: file,
-        name: file.name.substring(0, file.name.lastIndexOf(".")) || file.name,
-        size: formatFileSize(file.size),
-        type: fileExtension,
-        preview: previewUrl,
-        progress: 0,
-        status: "uploading",
-      };
 
       updatedFiles.push(newRecord);
 
@@ -99,15 +85,16 @@ export default function Insurance() {
           currentProgress = 100;
           clearInterval(interval);
           updateForm({
-            insuranceFiles: updatedFiles.map((f) =>
-              f.id === fileId ? { ...f, progress: 100, status: "success" } : f
-            ),
+            insuranceFiles: updateUploadItem(updatedFiles, newRecord.id, () => ({
+              progress: 100,
+              status: "success",
+            })),
           });
         } else {
           updateForm({
-            insuranceFiles: updatedFiles.map((f) =>
-              f.id === fileId ? { ...f, progress: currentProgress } : f
-            ),
+            insuranceFiles: updateUploadItem(updatedFiles, newRecord.id, () => ({
+              progress: currentProgress,
+            })),
           });
         }
       }, 300);
@@ -125,8 +112,7 @@ export default function Insurance() {
   };
 
   const removeFile = (id) => {
-    const filtered = (formData.insuranceFiles || []).filter((f) => f.id !== id);
-    updateForm({ insuranceFiles: filtered });
+    updateForm({ insuranceFiles: removeUploadItem(formData.insuranceFiles || [], id) });
   };
 
   const startRename = (id, currentName) => {
@@ -136,15 +122,14 @@ export default function Insurance() {
 
   const saveRename = (id) => {
     if (!tempName.trim()) return;
-    const updated = (formData.insuranceFiles || []).map((f) =>
-      f.id === id ? { ...f, name: tempName } : f
-    );
-    updateForm({ insuranceFiles: updated });
+    updateForm({
+      insuranceFiles: renameUploadItem(formData.insuranceFiles || [], id, tempName),
+    });
     setEditingId(null);
   };
 
   useEffect(() => {
-    markStepComplete("/insurance", true);
+    markStepComplete("/register/insurance", true);
   }, [markStepComplete]);
 
   return (
@@ -339,14 +324,14 @@ export default function Insurance() {
       </div>
 
       <div className="footer-actions">
-        <button className="secondary-skip-btn" onClick={() => navigate("/health-records")}>
+          <button className="secondary-skip-btn" onClick={() => navigate("/register/health-records")}>
           Skip for now
         </button>
         <div className="right-group">
-          <button className="plain-back-btn" onClick={() => navigate("/medical-history")}>
+          <button className="plain-back-btn" onClick={() => navigate("/register/medical-history")}>
             Go Back
           </button>
-          <button className="primary-dark-btn" onClick={() => navigate("/health-records")}>
+          <button className="primary-dark-btn" onClick={() => navigate("/register/health-records")}>
             Upload Health Records
           </button>
         </div>

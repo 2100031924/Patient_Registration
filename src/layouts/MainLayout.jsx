@@ -6,12 +6,12 @@ import "./MainLayout.css";
 import { FiHeadphones, FiMenu } from "react-icons/fi";
 
 const headerMeta = {
-  "/": { title: "Personal Information", subtitle: "Add your basic information to complete your profile and personalize your healthcare journey." },
-  "/additional-info": { title: "Additional Information", subtitle: "Enhance your profile with optional details for a more personalized healthcare journey." },
-  "/medical-history": { title: "Medical History", subtitle: "Add information about your past treatments, medications, and health conditions." },
-  "/insurance": { title: "Insurance Details", subtitle: "Add your insurance information for seamless coverage and claims processing." },
-  "/health-records": { title: "Upload Health Records", subtitle: "Keep all your medical documents in one secure and convenient place." },
-  "/review": { title: "Review & Complete", subtitle: "Configure your login credentials to securely manage your healthcare information." }
+  "/register": { title: "Personal Information", subtitle: "Add your basic information to complete your profile and personalize your healthcare journey." },
+  "/register/additional-info": { title: "Additional Information", subtitle: "Enhance your profile with optional details for a more personalized healthcare journey." },
+  "/register/medical-history": { title: "Medical History", subtitle: "Add information about your past treatments, medications, and health conditions." },
+  "/register/insurance": { title: "Insurance Details", subtitle: "Add your insurance information for seamless coverage and claims processing." },
+  "/register/health-records": { title: "Upload Health Records", subtitle: "Keep all your medical documents in one secure and convenient place." },
+  "/register/review": { title: "Review & Complete", subtitle: "Configure your login credentials to securely manage your healthcare information." }
 };
 
 const MainLayout = () => {

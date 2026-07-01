@@ -4,12 +4,12 @@ import { useLocation } from "react-router-dom";
 const FormContext = createContext(null);
 
 export const steps = [
-  { id: "personal",       label: "Personal Details",        path: "/",                 percentage: 10,  time: "1-2 Minutes" },
-  { id: "additional",     label: "Additional Information",  path: "/additional-info",  percentage: 30,  time: "2-3 Minutes" },
-  { id: "medical",        label: "Medical History",         path: "/medical-history",  percentage: 40,  time: "2-3 Minutes" },
-  { id: "insurance",      label: "Insurance Information",   path: "/insurance",        percentage: 60,  time: "1-2 Minutes" },
-  { id: "health-records", label: "Health Records",          path: "/health-records",   percentage: 75,  time: "2-3 Minutes" },
-  { id: "review",         label: "Review & Complete",       path: "/review",           percentage: 90,  time: "2-3 Minutes" },
+  { id: "personal",       label: "Personal Details",        path: "/register",                 percentage: 10,  time: "1-2 Minutes" },
+  { id: "additional",     label: "Additional Information",  path: "/register/additional-info",  percentage: 30,  time: "2-3 Minutes" },
+  { id: "medical",        label: "Medical History",         path: "/register/medical-history",  percentage: 40,  time: "2-3 Minutes" },
+  { id: "insurance",      label: "Insurance Information",   path: "/register/insurance",        percentage: 60,  time: "1-2 Minutes" },
+  { id: "health-records", label: "Health Records",          path: "/register/health-records",   percentage: 75,  time: "2-3 Minutes" },
+  { id: "review",         label: "Review & Complete",       path: "/register/review",           percentage: 90,  time: "2-3 Minutes" },
 ];
 
 const STORAGE_KEY = "patient_onboarding_form_v1";
@@ -58,12 +58,12 @@ const initialState = {
 };
 
 const initialCompletedSteps = {
-  "/": false,
-  "/additional-info": false,
-  "/medical-history": false,
-  "/insurance": false,
-  "/health-records": false,
-  "/review": false,
+  "/register": false,
+  "/register/additional-info": false,
+  "/register/medical-history": false,
+  "/register/insurance": false,
+  "/register/health-records": false,
+  "/register/review": false,
 };
 
 function toSerializable(formData) {

@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+.whychoose-section {
+  padding: 80px 0;
+  background: #ffffff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.whychoose-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header Section */
+.whychoose-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.section-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0b7a61;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.whychoose-header h2 {
+  font-size: 36px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+/* 4-Column Responsive Grid */
+.whychoose-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+/* Base Card Styling */
+.whychoose-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.015);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.whychoose-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.05);
+  border-color: #cbd5e1;
+}
+
+/* Top Illustration Area */
+.whychoose-visual {
+  height: 280px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+}
+
+/* Centered static images inside visual containers */
+.card-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.4s ease-in-out;
+}
+
+.whychoose-card:hover .card-image {
+  transform: scale(1.04);
+}
+
+/* Card Body Section */
+.whychoose-card-body {
+  padding: 0 28px 28px 28px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Icon and Title Wrapper */
+.title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* Modern pastel circle background icon badge */
+.icon-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e6f7f4; /* Soft signature healthcare-green pastel */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-icon {
+  font-size: 20px;
+  color: #0b7a61; /* Deep signature teal */
+}
+
+/* Card Titles */
+.whychoose-card-body h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  line-height: 1.25;
+}
+
+/* Descriptions with standard teal branding */
+.card-description {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0b7a61;
+  line-height: 1.5;
+  margin: 0 0 20px 0;
+  min-height: 38px; /* Standardize alignment across cards */
+}
+
+/* Bullet Points Container */
+.whychoose-points {
+  list-style: none;
+  padding: 0;
+  margin: auto 0 0 0;
+}
+
+/* Bullet list text elements */
+.whychoose-points li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.whychoose-points li:last-child {
+  margin-bottom: 0;
+}
+
+/* Bright green checkmarks */
+.check-icon {
+  color: #10b981;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1200px) {
+  .whychoose-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 680px) {
+  .whychoose-grid {
+    grid-template-columns: 1fr;
+  }
+  .whychoose-header h2 {
+    font-size: 28px;
+  }
+  .whychoose-container {
+    padding: 0 16px;
+  }
+  .whychoose-visual {
+    height: 240px;
+  }
+}

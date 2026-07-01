@@ -63,7 +63,7 @@ export default function MedicalHistory() {
   };
 
   useEffect(() => {
-    markStepComplete("/medical-history", true);
+    markStepComplete("/register/medical-history", true);
   }, [markStepComplete]);
 
   const medicationsLength = (formData.medications || "").length;
@@ -176,14 +176,14 @@ export default function MedicalHistory() {
       </div>
 
       <div className="footer-actions">
-        <button className="secondary-skip-btn" onClick={() => navigate("/insurance")}>
+        <button className="secondary-skip-btn" onClick={() => navigate("/register/insurance")}>
           Skip for now
         </button>
         <div className="right-group">
-          <button className="plain-back-btn" onClick={() => navigate("/additional-info")}>
+          <button className="plain-back-btn" onClick={() => navigate("/register/additional-info")}>
             Go Back
           </button>
-          <button className="primary-dark-btn" onClick={() => navigate("/insurance")}>
+          <button className="primary-dark-btn" onClick={() => navigate("/register/insurance")}>
             Add Insurance Information
           </button>
         </div>

@@ -122,7 +122,7 @@ export default function Review() {
   const isValidToSubmit = isPasswordStrong && isMatch && isIdValid;
 
   useEffect(() => {
-    markStepComplete("/review", isValidToSubmit);
+    markStepComplete("/register/review", isValidToSubmit);
   }, [isValidToSubmit, markStepComplete]);
 
   useEffect(() => {
@@ -164,7 +164,7 @@ export default function Review() {
 
   const handleResetRegistration = () => {
     resetForm();
-    navigate("/");
+    navigate("/register");
   };
 
   const copyPatientId = () => {
@@ -407,7 +407,7 @@ export default function Review() {
         </div>
       </div>
       <div className="footer-actions stretch-actions">
-        <button type="button" className="plain-back-btn" onClick={() => navigate("/health-records")}>Go Back</button>
+        <button type="button" className="plain-back-btn" onClick={() => navigate("/register/health-records")}>Go Back</button>
         <button type="button" className="primary-dark-btn wide-btn" disabled={!isValidToSubmit} onClick={handleSubmit}>Create Profile</button>
       </div>
     </div>

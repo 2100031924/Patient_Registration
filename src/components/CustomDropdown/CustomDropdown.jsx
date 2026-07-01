@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import useSearchableDropdown from "../../hooks/useSearchableDropdown";
 import { FiChevronDown, FiSearch } from "react-icons/fi";
 
 const CustomDropdown = ({
@@ -11,38 +11,27 @@ const CustomDropdown = ({
   error,
   placeholder = "Select"
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-        if (onBlur) {
-          onBlur({ target: { name } });
-        }
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [onBlur, name]);
-
-  const handleSelect = (option) => {
-    onChange({ target: { name, value: option } });
-    setIsOpen(false);
-    setSearchQuery("");
-  };
-
-  const filteredOptions = options.filter((option) =>
-    option.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const {
+    dropdownRef,
+    isOpen,
+    searchValue,
+    setSearchValue,
+    filteredOptions,
+    selectOption,
+    toggleDropdown,
+  } = useSearchableDropdown({
+    options,
+    value,
+    name,
+    onChange,
+    onBlur,
+  });
 
   return (
     <div className="custom-dropdown-container" ref={dropdownRef}>
       <div
         className={`custom-dropdown-trigger ${isOpen ? "open" : ""} ${error ? "error" : ""}`}
-        onClick={() => setIsOpen(!isOpen)}
+          onClick={toggleDropdown}
       >
         <span className={`selected-text ${!value ? "placeholder" : ""}`}>
           {value || placeholder}
@@ -58,8 +47,8 @@ const CustomDropdown = ({
               <input
                 type="text"
                 placeholder={`Search "${label}"`}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
                 onClick={(e) => e.stopPropagation()}
               />
             </div>
@@ -73,7 +62,7 @@ const CustomDropdown = ({
                   <div
                     key={option}
                     className={`dropdown-option ${isSelected ? "selected" : ""}`}
-                    onClick={() => handleSelect(option)}
+                      onClick={() => selectOption(option)}
                   >
                     {option}
                   </div>

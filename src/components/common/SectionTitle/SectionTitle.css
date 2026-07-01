@@ -1,0 +1,44 @@
+.section-title-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 48px;
+}
+
+.section-title-wrapper.align-center {
+  align-items: center;
+  text-align: center;
+}
+
+.section-title-wrapper.align-left {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.section-title-heading {
+  font-size: 36px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.8px;
+  line-height: 1.25;
+}
+
+.section-title-subtitle {
+  font-size: 17px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.65;
+  max-width: 680px;
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .section-title-heading {
+    font-size: 28px;
+    letter-spacing: -0.5px;
+  }
+  .section-title-subtitle {
+    font-size: 15px;
+  }
+}

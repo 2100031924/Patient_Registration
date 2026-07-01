@@ -1,0 +1,131 @@
+.cta-section {
+  padding: 80px 0;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.cta-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 80px;
+  align-items: center;
+}
+
+/* Image Visual & Bottom Fade Effect */
+.cta-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.cta-img {
+  width: 100%;
+  max-width: 550px;
+  height: auto;
+  object-fit: cover;
+  /* Seamless fade out to match the clean white background */
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* Typography Styling */
+.cta-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.cta-heading {
+  font-size: 38px;
+  font-weight: 750;
+  color: #1e293b;
+  margin: 0 0 12px 0;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
+}
+
+.cta-subheading {
+  font-size: 16px;
+  color: #64748b;
+  margin: 0 0 32px 0;
+  font-weight: 400;
+}
+
+/* Actions & Buttons (Stacked vertically to match reference) */
+.cta-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.cta-btn-primary {
+  background: #0d8a72; /* Exact clinical teal/emerald */
+  color: #ffffff;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  border: 1px solid #0d8a72;
+}
+
+.cta-btn-primary:hover {
+  background: #0a735f;
+}
+
+.cta-btn-secondary {
+  background: #ffffff;
+  color: #0d8a72;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1.5px solid #0d8a72;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.cta-btn-secondary:hover {
+  background: #f0fdfa;
+}
+
+.btn-icon {
+  font-size: 18px;
+}
+
+/* Responsive Rules */
+@media (max-width: 968px) {
+  .cta-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .cta-content {
+    align-items: center;
+  }
+
+  .cta-actions {
+    margin: 0 auto;
+  }
+}

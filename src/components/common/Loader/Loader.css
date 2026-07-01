@@ -1,0 +1,45 @@
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 48px;
+}
+
+.loader-spinner {
+  border-radius: 50%;
+  border: 3.5px solid #e2e8f0;
+  border-top-color: #005d4e;
+  animation: loaderSpin 0.75s linear infinite;
+}
+
+.loader-sm .loader-spinner {
+  width: 28px;
+  height: 28px;
+  border-width: 3px;
+}
+
+.loader-md .loader-spinner {
+  width: 44px;
+  height: 44px;
+}
+
+.loader-lg .loader-spinner {
+  width: 60px;
+  height: 60px;
+  border-width: 4.5px;
+}
+
+@keyframes loaderSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loader-text {
+  font-size: 15px;
+  color: #475569;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+}

@@ -1,0 +1,260 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4fbf9;
+  padding: 40px 20px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.login-container {
+  max-width: 1100px;
+  width: 100%;
+  min-height: 600px;
+  background: #ffffff;
+  border-radius: 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.login-left {
+  background: #005d4e;
+  color: #ffffff;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.login-brand {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-dot {
+  color: #10b981;
+}
+
+.login-left-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-left-content h1 {
+  font-size: 34px;
+  font-weight: 850;
+  margin: 0 0 12px;
+  letter-spacing: -1px;
+}
+
+.login-left-content p {
+  font-size: 15px;
+  opacity: 0.8;
+  line-height: 1.6;
+  margin: 0 0 40px;
+}
+
+.login-left-features {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.left-feat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.feat-num {
+  font-size: 13px;
+  font-weight: 800;
+  opacity: 0.5;
+  min-width: 28px;
+}
+
+.login-footer-text {
+  font-size: 14px;
+  opacity: 0.7;
+  margin: 0;
+}
+
+.login-link {
+  color: #5eead4;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.login-right {
+  padding: 48px;
+  display: flex;
+  align-items: center;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+.login-form h2 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px;
+  letter-spacing: -0.5px;
+}
+
+.login-form-sub {
+  font-size: 15px;
+  color: #64748b;
+  margin: 0 0 32px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0 14px;
+  transition: border-color 0.2s ease;
+  background: #ffffff;
+}
+
+.input-wrapper:focus-within {
+  border-color: #005d4e;
+}
+
+.input-icon {
+  color: #94a3b8;
+  font-size: 18px;
+}
+
+.input-wrapper input {
+  border: none;
+  outline: none;
+  padding: 14px 12px;
+  font-size: 14.5px;
+  width: 100%;
+  background: transparent;
+  color: #1e293b;
+}
+
+.input-wrapper input::placeholder {
+  color: #94a3b8;
+}
+
+.toggle-pwd {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  padding: 0;
+}
+
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #475569;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.forgot-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: #005d4e;
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+.login-submit-btn {
+  width: 100%;
+  background: #005d4e;
+  color: #ffffff;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.login-submit-btn:hover {
+  background: #00493d;
+}
+
+.login-or {
+  text-align: center;
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 24px 0 16px;
+  position: relative;
+}
+
+.social-login {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.social-btn {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.social-btn:hover {
+  border-color: #005d4e;
+  color: #005d4e;
+  background: #eef6f5;
+}

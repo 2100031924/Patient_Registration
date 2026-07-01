@@ -1,0 +1,47 @@
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 0;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.page-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.page-header-title {
+  font-size: 32px;
+  font-weight: 850;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.8px;
+}
+
+.page-header-subtitle {
+  font-size: 16px;
+  color: #64748b;
+  margin: 0;
+  font-weight: 500;
+}
+
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 32px 0;
+  }
+  .page-header-title {
+    font-size: 26px;
+  }
+}

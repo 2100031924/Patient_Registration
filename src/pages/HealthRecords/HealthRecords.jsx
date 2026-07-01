@@ -1,6 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useForm } from "../../context/FormContext";
 import { useState, useRef, useEffect } from "react";
+import {
+  buildUploadItem,
+  removeUploadItem,
+  renameUploadItem,
+  updateUploadItem,
+} from "../../utils/fileUploadHelpers";
 import { FaCloudUploadAlt, FaFilePdf } from "react-icons/fa";
 import { FiCheckCircle, FiFileText, FiActivity, FiLayers, FiEdit2, FiTrash2, FiLoader } from "react-icons/fi";
 import { MdOutlineMedicalServices } from "react-icons/md";
@@ -14,14 +20,6 @@ export default function HealthRecords() {
   const [tempName, setTempName] = useState("");
   const fileInputRef = useRef(null);
 
-  const formatFileSize = (bytes) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  };
-
   const handleFiles = (files) => {
     if (!files || files.length === 0) return;
     const fileList = Array.from(files);
@@ -29,28 +27,16 @@ export default function HealthRecords() {
     const updatedRecords = [...(formData.healthRecords || [])];
 
     fileList.forEach((file) => {
-      const sizeMB = file.size / (1024 * 1024);
-      if (sizeMB > 20) {
-        alert(`File "${file.name}" exceeds the 20MB limit.`);
+      const { item: newRecord, error } = buildUploadItem({
+        file,
+        prefix: "rec",
+        maxSizeMB: 20,
+      });
+
+      if (error) {
+        alert(error);
         return;
       }
-
-      const recordId = "rec_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
-      const isImg = file.type.startsWith("image/");
-      const previewUrl = isImg ? URL.createObjectURL(file) : "";
-
-      const fileExtension = file.name.substring(file.name.lastIndexOf(".") + 1).toUpperCase();
-
-      const newRecord = {
-        id: recordId,
-        file: file,
-        name: file.name.substring(0, file.name.lastIndexOf(".")) || file.name,
-        size: formatFileSize(file.size),
-        type: fileExtension,
-        preview: previewUrl,
-        progress: 0,
-        status: "uploading",
-      };
 
       updatedRecords.push(newRecord);
 
@@ -61,15 +47,16 @@ export default function HealthRecords() {
           currentProgress = 100;
           clearInterval(interval);
           updateForm({
-            healthRecords: updatedRecords.map((r) =>
-              r.id === recordId ? { ...r, progress: 100, status: "success" } : r
-            ),
+            healthRecords: updateUploadItem(updatedRecords, newRecord.id, () => ({
+              progress: 100,
+              status: "success",
+            })),
           });
         } else {
           updateForm({
-            healthRecords: updatedRecords.map((r) =>
-              r.id === recordId ? { ...r, progress: currentProgress } : r
-            ),
+            healthRecords: updateUploadItem(updatedRecords, newRecord.id, () => ({
+              progress: currentProgress,
+            })),
           });
         }
       }, 250);
@@ -87,8 +74,7 @@ export default function HealthRecords() {
   };
 
   const deleteRecord = (id) => {
-    const filtered = (formData.healthRecords || []).filter((r) => r.id !== id);
-    updateForm({ healthRecords: filtered });
+    updateForm({ healthRecords: removeUploadItem(formData.healthRecords || [], id) });
   };
 
   const startRename = (id, name) => {
@@ -98,15 +84,14 @@ export default function HealthRecords() {
 
   const saveRename = (id) => {
     if (!tempName.trim()) return;
-    const updated = (formData.healthRecords || []).map((r) =>
-      r.id === id ? { ...r, name: tempName } : r
-    );
-    updateForm({ healthRecords: updated });
+    updateForm({
+      healthRecords: renameUploadItem(formData.healthRecords || [], id, tempName),
+    });
     setEditingId(null);
   };
 
   useEffect(() => {
-    markStepComplete("/health-records", true);
+    markStepComplete("/register/health-records", true);
   }, [markStepComplete]);
 
   return (
@@ -251,14 +236,14 @@ export default function HealthRecords() {
       </div>
 
       <div className="footer-actions">
-        <button className="secondary-skip-btn" onClick={() => navigate("/review")}>
+        <button className="secondary-skip-btn" onClick={() => navigate("/register/review")}>
           Skip for now
         </button>
         <div className="right-group">
-          <button className="plain-back-btn" onClick={() => navigate("/insurance")}>
+          <button className="plain-back-btn" onClick={() => navigate("/register/insurance")}>
             Go Back
           </button>
-          <button className="primary-dark-btn" onClick={() => navigate("/review")}>
+          <button className="primary-dark-btn" onClick={() => navigate("/register/review")}>
             Create Unique ID
           </button>
         </div>

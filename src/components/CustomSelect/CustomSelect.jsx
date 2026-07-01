@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import useSearchableDropdown from "../../hooks/useSearchableDropdown";
 import { FiChevronDown, FiSearch } from "react-icons/fi";
 
 const CustomSelect = ({
@@ -13,39 +13,21 @@ const CustomSelect = ({
   onChange,
   onBlur
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        if (isOpen) {
-          setIsOpen(false);
-          onBlur({ target: { name } });
-        }
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen, name, onBlur]);
-
-  const filteredOptions = options.filter((option) =>
-    option.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleSelect = (optionValue) => {
-    onChange({ target: { name, value: optionValue } });
-    setIsOpen(false);
-    setSearchTerm("");
-  };
-
-  const toggleDropdown = () => {
-    if (isOpen) {
-      onBlur({ target: { name } });
-    }
-    setIsOpen(!isOpen);
-  };
+  const {
+    dropdownRef,
+    isOpen,
+    searchValue,
+    setSearchValue,
+    filteredOptions,
+    selectOption,
+    toggleDropdown,
+  } = useSearchableDropdown({
+    options,
+    value,
+    name,
+    onChange,
+    onBlur,
+  });
 
   return (
     <div className="field" ref={dropdownRef}>
@@ -71,8 +53,8 @@ const CustomSelect = ({
               <input
                 type="text"
                 placeholder={`Search ${label}`}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
                 autoFocus
               />
             </div>
@@ -84,7 +66,7 @@ const CustomSelect = ({
                     <div
                       key={opt}
                       className={`dropdown-option ${isSelected ? "selected" : ""}`}
-                      onClick={() => handleSelect(opt)}
+                      onClick={() => selectOption(opt)}
                     >
                       {opt}
                     </div>
