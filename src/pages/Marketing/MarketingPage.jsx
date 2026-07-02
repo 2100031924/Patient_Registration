@@ -1,8 +1,17 @@
 import { useLocation, Link } from "react-router-dom";
-import { FiArrowLeft, FiHome, FiChevronRight } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiHome,
+  FiChevronRight,
+  FiVideo,
+  FiShield,
+  FiClock,
+  FiArrowRight,
+  FiCheckCircle
+} from "react-icons/fi";
 import Navbar from "../../components/layout/Navbar/Navbar";
 import Footer from "../../components/layout/Footer/Footer";
-import { useMemo, useEffect, memo } from "react";
+import { useMemo, useEffect, memo, useState, useRef, Component } from "react";
 import "./MarketingPage.css";
 
 // Data-driven content map for all marketing pages
@@ -18,7 +27,8 @@ const PAGE_METADATA = {
         { name: "Starter", price: "$49/mo", features: ["Up to 100 patients", "Basic analytics", "Email support", "1 user"] },
         { name: "Professional", price: "$149/mo", features: ["Up to 500 patients", "Advanced analytics", "Priority support", "5 users"] },
         { name: "Enterprise", price: "Custom", features: ["Unlimited patients", "AI-powered insights", "24/7 dedicated support", "Unlimited users"] },
-      ]}
+      ]},
+      { type: "cta", title: "Need a custom solution?", buttonText: "Contact Sales", buttonLink: "/contact" }
     ]
   },
   "resources": {
@@ -42,6 +52,17 @@ const PAGE_METADATA = {
     subtitle: "Virtual care, real connections",
     badge: "SOLUTIONS",
     description: "Deliver high-quality remote care with our HIPAA-compliant telemedicine platform. Secure video consultations, e-prescriptions, and integrated follow-ups.",
+    sections: [
+      {
+        type: "features",
+        title: "Platform Capabilities",
+        items: [
+          { icon: "video", title: "HD Video Consultations", desc: "Crystal clear, low-latency video optimized for medical environments." },
+          { icon: "shield", title: "HIPAA Compliant", desc: "End-to-end encryption ensuring patient data security and privacy." },
+          { icon: "clock", title: "Async Messaging", desc: "Secure messaging for follow-ups without requiring a live visit." }
+        ]
+      }
+    ]
   },
   "solutions-ehr-integration": {
     title: "EHR Integration",
@@ -97,14 +118,22 @@ const PAGE_METADATA = {
   },
 };
 
+// Normalize strings for slug matching
+const normalize = (str) => str.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9-]/g, "");
+
+// Precompute normalized metadata map for O(1) lookup
+const NORMALIZED_PAGE_METADATA = Object.keys(PAGE_METADATA).reduce((acc, key) => {
+  acc[normalize(key)] = PAGE_METADATA[key];
+  return acc;
+}, {});
+
 /**
  * Advanced path resolution logic.
  * Safely decodes URI, handles trailing slashes, normalizes special characters,
- * and attempts both exact and slug-normalized matching.
+ * and attempts both exact and slug-normalized matching in O(1) time.
  */
-const resolvePageMeta = (pathname) => {
+const resolvePageMeta = (pathname = '') => {
   try {
-    // Decode URI and remove trailing slashes for consistent parsing
     const cleanPath = decodeURIComponent(pathname).replace(/\/+$/, "");
     const parts = cleanPath.split("/").filter(Boolean);
 
@@ -115,22 +144,87 @@ const resolvePageMeta = (pathname) => {
     // 1. Attempt exact key match
     if (PAGE_METADATA[rawKey]) return PAGE_METADATA[rawKey];
 
-    // 2. Fallback: Normalized slug match (e.g., handles & vs 'and', special chars in URLs)
-    const normalize = (str) => str.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9-]/g, "");
-    const normalizedRawKey = normalize(rawKey);
-
-    const matchKey = Object.keys(PAGE_METADATA).find(
-      (k) => normalize(k) === normalizedRawKey
-    );
-
-    return matchKey ? PAGE_METADATA[matchKey] : null;
+    // 2. Fallback: Normalized slug match via precomputed map
+    return NORMALIZED_PAGE_METADATA[normalize(rawKey)] || null;
   } catch (error) {
-    console.error(`[MarketingPage] Failed to resolve path: ${pathname}`, error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(`[MarketingPage] Failed to resolve path: ${pathname}`, error);
+    }
     return null;
   }
 };
 
-// --- Memoized Section Components ---
+// --- Hooks ---
+
+/**
+ * Intersection Observer hook for performant scroll animations
+ */
+const useReveal = () => {
+  const ref = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target); // Unobserve after first reveal
+        }
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    const currentRef = ref.current;
+    if (currentRef) observer.observe(currentRef);
+
+    return () => {
+      if (currentRef) observer.unobserve(currentRef);
+    };
+  }, []);
+
+  return [ref, isVisible];
+};
+
+// --- Error Boundary for Section Rendering ---
+
+class SectionErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('[MarketingPage] Section Render Error:', error);
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <div className="mp-section-error">Failed to load this section.</div>;
+    }
+    return this.props.children;
+  }
+}
+
+// --- Memoized Layout & Section Components ---
+
+const Reveal = memo(function Reveal({ children, delay = 0 }) {
+  const [ref, isVisible] = useReveal();
+  return (
+    <div
+      ref={ref}
+      className={`mp-reveal ${isVisible ? 'is-visible' : ''}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+});
 
 const GridSection = memo(function GridSection({ section }) {
   return (
@@ -169,10 +263,52 @@ const ListSection = memo(function ListSection({ section }) {
   );
 });
 
+const ICON_MAP = {
+  video: FiVideo,
+  shield: FiShield,
+  clock: FiClock,
+  check: FiCheckCircle
+};
+
+const FeaturesSection = memo(function FeaturesSection({ section }) {
+  return (
+    <div className="mp-section">
+      <h3 className="mp-section-title">{section.title}</h3>
+      <div className="mp-features">
+        {section.items.map((item, i) => {
+          const Icon = ICON_MAP[item.icon] || FiCheckCircle;
+          return (
+            <div key={item.title || i} className="mp-feature-card">
+              <div className="mp-feature-icon">
+                <Icon size={20} />
+              </div>
+              <h4 className="mp-feature-title">{item.title}</h4>
+              {item.desc && <p className="mp-feature-desc">{item.desc}</p>}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+});
+
+const CtaSection = memo(function CtaSection({ section }) {
+  return (
+    <div className="mp-cta">
+      <h3>{section.title}</h3>
+      <Link to={section.buttonLink} className="mp-cta-btn">
+        {section.buttonText} <FiArrowRight />
+      </Link>
+    </div>
+  );
+});
+
 // Extensible Registry Pattern for rendering dynamic sections
 const SECTION_REGISTRY = {
   grid: GridSection,
   list: ListSection,
+  features: FeaturesSection,
+  cta: CtaSection
 };
 
 const PageSection = memo(function PageSection({ section }) {
@@ -185,7 +321,11 @@ const PageSection = memo(function PageSection({ section }) {
     return null;
   }
 
-  return <Component section={section} />;
+  return (
+    <SectionErrorBoundary>
+      <Component section={section} />
+    </SectionErrorBoundary>
+  );
 });
 
 const Breadcrumbs = memo(function Breadcrumbs({ meta }) {
@@ -206,23 +346,52 @@ export default function MarketingPage() {
   // Memoize metadata resolution to prevent unnecessary computations on re-renders
   const meta = useMemo(() => resolvePageMeta(location.pathname), [location.pathname]);
 
-  // SPA Lifecycle: SEO Title Management & Scroll Restoration
+  // SPA Lifecycle: SEO Title Management, Scroll Restoration, and JSON-LD Injection
   useEffect(() => {
-    document.title = meta
-      ? `${meta.title} | MediConnect`
-      : "MediConnect";
+    document.title = meta ? `${meta.title} | MediConnect` : "MediConnect";
 
-    // Scroll to top on route change, preventing native browser scroll restoration issues
+    // Instant scroll to top preventing native browser scroll restoration issues
     window.scrollTo(0, 0);
+
+    let scriptElement = null;
+
+    if (meta) {
+      // Structured Data Injection for SEO
+      const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": meta.title,
+        "description": meta.description,
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": window.location.origin },
+            { "@type": "ListItem", "position": 2, "name": meta.badge },
+            { "@type": "ListItem", "position": 3, "name": meta.title, "item": window.location.href }
+          ]
+        }
+      };
+
+      scriptElement = document.createElement('script');
+      scriptElement.type = 'application/ld+json';
+      scriptElement.text = JSON.stringify(structuredData);
+      document.head.appendChild(scriptElement);
+    }
+
+    return () => {
+      if (scriptElement) {
+        document.head.removeChild(scriptElement);
+      }
+    };
   }, [meta, location.pathname]);
 
   if (!meta) {
     return (
       <>
         <Navbar />
-        <main className="mp-page">
+        <main id="main-content" className="mp-page">
           <div className="mp-container">
-            <div className="mp-empty">
+            <div className="mp-empty" aria-live="polite">
               <h2>Page Under Development</h2>
               <p>We're working on bringing you the best content for this page.</p>
               <Link to="/" className="mp-back-link"><FiArrowLeft /> Back to Home</Link>
@@ -237,21 +406,37 @@ export default function MarketingPage() {
   return (
     <>
       <Navbar />
-      <main className="mp-page">
+      <main id="main-content" className="mp-page">
         <div className="mp-container">
           <Breadcrumbs meta={meta} />
 
-          <div className="mp-header">
-            <span className="mp-badge">{meta.badge}</span>
-            <h1>{meta.title}</h1>
-            <p className="mp-subtitle">{meta.subtitle}</p>
-          </div>
+          <Reveal>
+            <div className="mp-header">
+              <span className="mp-badge">{meta.badge}</span>
+              <h1>{meta.title}</h1>
+              <p className="mp-subtitle">{meta.subtitle}</p>
+            </div>
 
-          <p className="mp-description">{meta.description}</p>
+            <p className="mp-description">{meta.description}</p>
+          </Reveal>
 
           {meta.sections && meta.sections.map((section, i) => (
-            <PageSection key={`${section.type}-${i}`} section={section} />
+            <Reveal key={`${section.type}-${i}`} delay={i * 100}>
+              <PageSection section={section} />
+            </Reveal>
           ))}
+
+          {/* Fallback CTA if no sections are defined */}
+          {(!meta.sections || meta.sections.length === 0) && (
+            <Reveal delay={200}>
+              <div className="mp-cta">
+                <h3>Want to learn more about {meta.title}?</h3>
+                <Link to="/contact" className="mp-cta-btn">
+                  Get in Touch <FiArrowRight />
+                </Link>
+              </div>
+            </Reveal>
+          )}
         </div>
       </main>
       <Footer />

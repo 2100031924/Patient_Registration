@@ -8,9 +8,10 @@ import HealthRecords from "../pages/HealthRecords/HealthRecords";
 import Review from "../pages/Review/Review";
 import LandingPage from "../pages/Landing/LandingPage";
 import Login from "../pages/Login/Login";
-import Dashboard from "../pages/Dashboard/Dashboard";
-import NotFound from "../pages/NotFound/NotFound";
-import ProtectedRoutes from "./ProtectedRoutes";
+import PatientLogin from "../pages/PatientLogin/PatientLogin";
+import PatientSignup from "../pages/PatientSignup/PatientSignup";
+import OtpVerification from "../pages/OtpVerification/OtpVerification";
+import IdPasswordLogin from "../pages/IdPasswordLogin/IdPasswordLogin";
 import MarketingPage from "../pages/Marketing/MarketingPage";
 
 /*
@@ -61,9 +62,10 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
-      <Route element={<ProtectedRoutes />}>
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Route>
+      <Route path="/patient-login" element={<PatientLogin />} />
+      <Route path="/patient-signup" element={<PatientSignup />} />
+      <Route path="/otp-verification" element={<OtpVerification />} />
+      <Route path="/id-password-login" element={<IdPasswordLogin />} />
       <Route element={<MainLayout />}>
         <Route path="/register" element={<PersonalInfo />} />
         <Route path="/register/additional-info" element={<AdditionalInfo />} />
@@ -76,7 +78,6 @@ function AppRoutes() {
       {MARKETING_ROUTES.map((path) => (
         <Route key={path} path={path} element={<MarketingPage />} />
       ))}
-      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

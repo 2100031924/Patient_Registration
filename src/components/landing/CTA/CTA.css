@@ -1,5 +1,5 @@
 .cta-section {
-  padding: 120px 0;
+  padding: 80px 0;
   background: #ffffff;
   display: flex;
   align-items: center;
@@ -13,10 +13,10 @@
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 24px;
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
-  gap: 80px;
+  gap: 60px;
   align-items: center;
   position: relative;
   z-index: 2;
@@ -28,7 +28,6 @@
   align-items: center;
   width: 100%;
   position: relative;
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
 }
 
@@ -49,7 +48,7 @@
 
 .cta-img {
   width: 100%;
-  max-width: 550px;
+  max-width: 520px;
   height: auto;
   object-fit: cover;
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0) 100%);
@@ -65,32 +64,11 @@
   justify-content: center;
 }
 
-.cta-heading, .cta-subheading, .cta-actions {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.cta-heading.is-visible,
-.cta-subheading.is-visible,
-.cta-actions.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.cta-subheading.is-visible {
-  transition-delay: 0.15s;
-}
-
-.cta-actions.is-visible {
-  transition-delay: 0.3s;
-}
-
 .cta-heading {
-  font-size: 38px;
+  font-size: 36px;
   font-weight: 750;
   color: #1e293b;
-  margin: 0 0 12px 0;
+  margin: 0 0 12px;
   line-height: 1.25;
   letter-spacing: -0.5px;
 }
@@ -98,20 +76,20 @@
 .cta-subheading {
   font-size: 16px;
   color: #64748b;
-  margin: 0 0 32px 0;
+  margin: 0 0 28px;
   font-weight: 400;
 }
 
 .cta-actions {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
-  max-width: 380px;
+  max-width: 360px;
 }
 
 .cta-btn-primary, .cta-btn-secondary {
-  padding: 16px;
+  padding: 14px;
   border-radius: 8px;
   font-size: 15px;
   font-weight: 600;
@@ -120,8 +98,6 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  transition: background-color 0.2s ease, transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
-  will-change: transform;
   position: relative;
   overflow: hidden;
 }
@@ -150,7 +126,6 @@
 
 .btn-icon {
   font-size: 18px;
-  transition: transform 0.3s ease;
 }
 
 .cta-btn-primary:hover .btn-icon,
@@ -164,15 +139,12 @@
     gap: 40px;
     text-align: center;
   }
-
   .cta-content {
     align-items: center;
   }
-
   .cta-actions {
     margin: 0 auto;
   }
-
   .cta-visual {
     transform: none !important;
   }

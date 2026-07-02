@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-/* Advanced Logic: CSS Custom Properties for maintainability */
 :root {
   --wc-teal-deep: #0b7a61;
   --wc-teal-pastel: #e6f7f4;
@@ -10,29 +9,27 @@
   --wc-border-light: #e5e7eb;
   --wc-border-hover: #cbd5e1;
   --wc-bg-solid: #ffffff;
-  --wc-transition-base: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .whychoose-section {
   padding: 80px 0;
-  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+  background: #ffffff;
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .whychoose-container {
-  max-width: 1320px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
 }
 
-/* Header Section */
 .whychoose-header {
   text-align: center;
   margin-bottom: 48px;
 }
 
 .section-label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--wc-teal-deep);
   letter-spacing: 0.8px;
@@ -49,56 +46,30 @@
   letter-spacing: -0.5px;
 }
 
-/* Advanced Logic: Auto-fit grid handles responsive breakpoints natively */
 .whychoose-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
 }
 
-/* Base Card Styling */
 .whychoose-card {
   background: var(--wc-bg-solid);
   border: 1px solid var(--wc-border-light);
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.015);
-  transition: var(--wc-transition-base);
   display: flex;
   flex-direction: column;
-
-  /* Advanced Logic: Scroll Reveal Initial State */
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-.whychoose-card.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.6s ease, transform 0.6s var(--wc-transition-base), box-shadow 0.4s ease, border-color 0.4s ease;
-  transition-delay: var(--reveal-delay, 0ms);
-}
-
-/* Accessibility Focus State */
-.whychoose-card:focus-within {
-  outline: 2px solid var(--wc-teal-deep);
-  outline-offset: 4px;
 }
 
 .whychoose-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
   box-shadow: 0 16px 32px rgba(11, 122, 97, 0.08);
   border-color: var(--wc-border-hover);
 }
 
-/* Keep hover transform from conflicting with is-visible if already visible */
-.whychoose-card.is-visible:hover {
-  transform: translateY(-6px);
-}
-
-/* Top Illustration Area */
 .whychoose-visual {
-  height: 280px;
+  height: 240px;
   background: transparent;
   display: flex;
   align-items: center;
@@ -112,32 +83,29 @@
   max-height: 100%;
   object-fit: contain;
   display: block;
-  transition: transform 0.4s ease-in-out;
 }
 
 .whychoose-card:hover .card-image {
   transform: scale(1.04);
 }
 
-/* Card Body Section */
 .whychoose-card-body {
-  padding: 0 28px 28px 28px;
+  padding: 0 24px 24px 24px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
-/* Icon and Title Wrapper */
 .title-wrapper {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
 .icon-badge {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--wc-teal-pastel);
   display: flex;
@@ -147,7 +115,7 @@
 }
 
 .card-icon {
-  font-size: 20px;
+  font-size: 18px;
   color: var(--wc-teal-deep);
 }
 
@@ -164,11 +132,10 @@
   font-weight: 600;
   color: var(--wc-teal-deep);
   line-height: 1.5;
-  margin: 0 0 20px 0;
-  min-height: 38px;
+  margin: 0 0 16px;
+  min-height: 36px;
 }
 
-/* Bullet Points Container */
 .whychoose-points {
   list-style: none;
   padding: 0;
@@ -181,7 +148,7 @@
   gap: 8px;
   font-size: 13px;
   color: var(--wc-text-muted);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-weight: 500;
 }
 
@@ -195,8 +162,17 @@
   flex-shrink: 0;
 }
 
-/* Simplified Media Queries relying on auto-fit, only adjusting typography/spacing on mobile */
+@media (max-width: 1200px) {
+  .whychoose-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
 @media (max-width: 680px) {
+  .whychoose-grid {
+    grid-template-columns: 1fr;
+  }
   .whychoose-header h2 {
     font-size: 28px;
   }
@@ -204,6 +180,6 @@
     padding: 0 16px;
   }
   .whychoose-visual {
-    height: 240px;
+    height: 200px;
   }
 }

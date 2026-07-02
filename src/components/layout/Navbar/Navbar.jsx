@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { FiMenu, FiX, FiChevronDown, FiUser, FiArrowRight } from "react-icons/fi";
 import { useState, useEffect, useRef } from "react";
 import LogoIcon from "../../../icons/LogoIcon";
+import brandLogo from "../../../assets/images/landing/image5.png";
 import "./Navbar.css";
 
 const NAV_DROPDOWNS = {
@@ -60,13 +61,7 @@ export default function Navbar() {
     <nav className={`navbar ${isScrolled ? "scrolled" : ""}`} ref={navRef}>
       <div className="navbar-container">
         <Link to="/" className="navbar-brand" aria-label="MediConnect Home">
-          <div className="brand-logo-container">
-            <LogoIcon size={28} />
-          </div>
-          <div className="brand-meta">
-            <span className="brand-text">MediConnect</span>
-            <span className="brand-subtext">Healthcare Ecosystem</span>
-          </div>
+          <img src={brandLogo} alt="MediConnect" className="navbar-brand-logo" />
         </Link>
 
         <div className="navbar-links-desktop">
@@ -135,10 +130,7 @@ export default function Navbar() {
       <div className={`navbar-mobile-overlay ${isMobileOpen ? "open" : ""}`} onClick={() => setIsMobileOpen(false)} />
       <div className={`navbar-mobile-menu ${isMobileOpen ? "open" : ""}`}>
         <div className="mobile-menu-header">
-          <div className="brand-logo-container">
-            <LogoIcon size={24} />
-          </div>
-          <span className="brand-text">MediConnect</span>
+          <img src={brandLogo} alt="MediConnect" className="navbar-brand-logo mobile-brand-logo" />
           <button className="mobile-close-btn" onClick={() => setIsMobileOpen(false)} aria-label="Close menu">
             <FiX />
           </button>

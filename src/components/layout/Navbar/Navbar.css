@@ -53,25 +53,10 @@
   background: #dcf2ed;
 }
 
-.brand-meta {
-  display: flex;
-  flex-direction: column;
-}
-
-.brand-text {
-  font-size: 21px;
-  font-weight: 850;
-  color: #005d4e;
-  letter-spacing: -0.8px;
-  line-height: 1.1;
-}
-
-.brand-subtext {
-  font-size: 10px;
-  font-weight: 600;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
+.navbar-brand-logo {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
 }
 
 .navbar-links-desktop {
@@ -267,7 +252,13 @@
   border-bottom: 1px solid #f1f5f9;
 }
 
-.mobile-close-btn {
+.mobile-brand-logo {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+}
+
+.mobile-menu-header .mobile-close-btn {
   margin-left: auto;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
