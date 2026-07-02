@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import PortalLogoIcon from "../../icons/PortalLogoIcon";
 import SupportIcon from "../../icons/SupportIcon";
@@ -15,13 +15,100 @@ import "./IdPasswordLogin.css";
 export default function IdPasswordLogin() {
   const navigate = useNavigate();
   const onBack = () => navigate(-1);
+
+  const inputRef = useRef(null);
+
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [capsLockOn, setCapsLockOn] = useState(false);
+  const [authError, setAuthError] = useState("");
+  const [attempts, setAttempts] = useState(0);
+  const [lockoutTimer, setLockoutTimer] = useState(0);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert("Authenticating Secure Workspace access...");
+  // Advanced password rules definition
+  const rules = useMemo(() => [
+    { id: "length", label: "8+ characters", test: (v) => v.length >= 8 },
+    { id: "upper", label: "Uppercase", test: (v) => /[A-Z]/.test(v) },
+    { id: "lower", label: "Lowercase", test: (v) => /[a-z]/.test(v) },
+    { id: "number", label: "Number", test: (v) => /[0-9]/.test(v) },
+    { id: "special", label: "Special char", test: (v) => /[^A-Za-z0-9]/.test(v) },
+  ], []);
+
+  // Real-time validation check
+  const passedRules = useMemo(() => rules.filter(rule => rule.test(password)), [password, rules]);
+  const isPasswordValid = passedRules.length === rules.length;
+
+  // Dynamic Strength Calculation
+  const strength = useMemo(() => {
+    if (!password) return 0;
+    const score = passedRules.length + (password.length >= 12 ? 1 : 0);
+    if (score <= 2) return 1; // Weak
+    if (score <= 4) return 2; // Medium
+    return 3; // Strong
+  }, [password, passedRules.length]);
+
+  const strengthMeta = [
+    { label: "", color: "transparent" },
+    { label: "Weak", color: "#ef4444" },
+    { label: "Medium", color: "#f59e0b" },
+    { label: "Strong", color: "#10b981" },
+  ];
+
+  // Hardware event detection: Caps Lock
+  const handleKeyEvent = useCallback((e) => {
+    setCapsLockOn(e.getModifierState("CapsLock"));
+  }, []);
+
+  const handleChange = (e) => {
+    setPassword(e.target.value);
+    if (authError) setAuthError("");
   };
+
+  // Rate Limiting / Lockout Logic Simulation
+  const triggerLockout = () => {
+    setLockoutTimer(30); // 30 seconds lockout penalty
+    const interval = setInterval(() => {
+      setLockoutTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setAttempts(0);
+          setAuthError("");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Prevent action if locked out or invalid
+    if (lockoutTimer > 0 || !isPasswordValid || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setAuthError("");
+
+    // Simulate Secure API Call Delay
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    // Simulated Auth Failure Logic for Demonstration
+    const newAttempts = attempts + 1;
+    setAttempts(newAttempts);
+
+    if (newAttempts >= 3) {
+      setAuthError("Maximum attempts exceeded. Temporarily locked for security.");
+      triggerLockout();
+    } else {
+      setAuthError(`Authentication failed. ${3 - newAttempts} attempt(s) remaining.`);
+    }
+
+    setIsSubmitting(false);
+    if (inputRef.current) inputRef.current.focus();
+  };
+
+  const isSubmitDisabled = isSubmitting || lockoutTimer > 0 || (password.length > 0 && !isPasswordValid);
 
   return (
     <div className="pwd-portal-layout">
@@ -97,18 +184,23 @@ export default function IdPasswordLogin() {
               <p>Enter your password to continue securely to your healthcare workspace.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="auth-form">
+            <form onSubmit={handleSubmit} className="auth-form" noValidate>
               <div className="form-group-wrapper">
                 <label htmlFor="patient-password" className="input-label-element">Password</label>
-                <div className="password-input-combined">
+                <div className={`password-input-combined ${authError ? "input-error-state" : ""}`}>
                   <input
+                    ref={inputRef}
                     id="patient-password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handleChange}
+                    onKeyDown={handleKeyEvent}
+                    onKeyUp={handleKeyEvent}
                     required
                     className="nested-input-field"
+                    aria-invalid={!!authError}
+                    aria-describedby="password-error password-strength"
                   />
                   <button
                     type="button"
@@ -119,9 +211,68 @@ export default function IdPasswordLogin() {
                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                   </button>
                 </div>
+
+                {/* Caps Lock Warning */}
+                {capsLockOn && (
+                  <div className="caps-lock-warning">
+                    <span className="warning-dot"></span>
+                    Caps Lock is ON
+                  </div>
+                )}
+
+                {/* Strength Meter & Validation Checklist */}
+                {password.length > 0 && (
+                  <div className="password-dynamic-feedback">
+                    <div className="password-strength-meter" id="password-strength">
+                      <div className="strength-bars">
+                        {[1, 2, 3].map((i) => (
+                          <div
+                            key={i}
+                            className={`strength-bar ${strength >= i ? "active" : ""}`}
+                            style={{ backgroundColor: strength >= i ? strengthMeta[strength].color : "" }}
+                          ></div>
+                        ))}
+                      </div>
+                      <span className="strength-label" style={{ color: strengthMeta[strength].color }}>
+                        {strengthMeta[strength].label}
+                      </span>
+                    </div>
+
+                    <div className="password-requirements">
+                      {rules.map((rule) => {
+                        const passed = rule.test(password);
+                        return (
+                          <div key={rule.id} className={`req-item ${passed ? "met" : ""}`}>
+                            <span className="req-check">✓</span>
+                            {rule.label}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Authentication Error Banner */}
+                {authError && (
+                  <div className="auth-error-banner" id="password-error" role="alert">
+                    {authError} {lockoutTimer > 0 && `(${lockoutTimer}s)`}
+                  </div>
+                )}
               </div>
 
-              <button type="submit" className="auth-submit-cta">Continue</button>
+              <button
+                type="submit"
+                className="auth-submit-cta"
+                disabled={isSubmitDisabled}
+              >
+                {isSubmitting ? (
+                  <span className="btn-spinner"></span>
+                ) : lockoutTimer > 0 ? (
+                  `Locked (${lockoutTimer}s)`
+                ) : (
+                  "Continue"
+                )}
+              </button>
             </form>
 
             <p className="reset-password-disclaimer">

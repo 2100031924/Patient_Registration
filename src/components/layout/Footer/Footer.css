@@ -36,26 +36,10 @@
   outline: none;
 }
 
-.logo-meta {
-  display: flex;
-  flex-direction: column;
-}
-
-.logo-text {
-  font-size: 20px;
-  font-weight: 800;
-  color: #005d4e;
-  letter-spacing: -0.5px;
-  line-height: 1.1;
-}
-
-.logo-sub {
-  font-size: 10px;
-  font-weight: 700;
-  color: #00a896;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 2px;
+.footer-brand-logo {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
 }
 
 .brand-desc {

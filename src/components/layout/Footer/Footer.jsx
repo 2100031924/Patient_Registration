@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { FiYoutube, FiFacebook, FiLinkedin, FiArrowRight, FiCheckCircle, FiAlertCircle, FiLoader } from "react-icons/fi";
 import FooterLogoIcon from "../../../icons/FooterLogoIcon";
+import footerBrandLogo from "../../../assets/images/landing/image5.png";
 import TwitterIcon from "../../../icons/TwitterIcon";
 import "./Footer.css";
 
@@ -150,11 +151,7 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="footer-brand">
             <Link to="/" className="footer-logo" aria-label="MediConnect Home">
-              <FooterLogoIcon size={34} />
-              <div className="logo-meta">
-                <span className="logo-text">MediConnect</span>
-                <span className="logo-sub">Healthcare Ecosystem</span>
-              </div>
+              <img src={footerBrandLogo} alt="MediConnect" className="footer-brand-logo" />
             </Link>
             <p className="brand-desc">
               One Integrated platform for all your healthcare needs. Empowering hospitals, Doctors and patients with AI and Technology.

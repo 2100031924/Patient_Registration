@@ -178,7 +178,10 @@ export default function PatientSignup() {
             </form>
 
             <p className="signup-redirect-text">
-              Don't have an account? <a href="/patient-login">Sign in</a>
+              Already have an account?{" "}
+              <a href="/patient-login" className="signup-redirect-link">
+                Login
+              </a>
             </p>
 
             <p className="signup-disclaimer-text">
